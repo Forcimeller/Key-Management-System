@@ -1,6 +1,13 @@
 #include <iostream>
 
 int main() {
-    std::cout << "Hello, World!" << std::endl;
+
+    std::string word;
+
+    std::cout << "Gimme a word any word!" << std::endl;
+    std::cin >> word;
+
+
+
     return 0;
 }
