@@ -1,4 +1,4 @@
 /home/cst3990/appFiles/clion-2023.3.4/bin/cmake/linux/aarch64/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/home/cst3990/appFiles/clion-2023.3.4/bin/ninja/linux/aarch64/ninja -G Ninja -S /home/cst3990/project/cmdLine -B /home/cst3990/project/cmdLine/cmake-build-debug
--- Configuring done (0.0s)
+-- Configuring done (0.1s)
 -- Generating done (0.0s)
 -- Build files have been written to: /home/cst3990/project/cmdLine/cmake-build-debug

@@ -4,6 +4,7 @@ void connectToDatabase();
 
 int main() {
 
+<<<<<<< HEAD
     mongocxx::instance instance{};
     mongocxx::client client{mongocxx::uri{}};
 
@@ -37,6 +38,14 @@ int main() {
     } else {
         std::cout << "No." << std::endl;
     }
+=======
+    std::string word;
+
+    std::cout << "Gimme a word any word!" << std::endl;
+    std::cin >> word;
+
+
+>>>>>>> master
 
     return 0;
 }
