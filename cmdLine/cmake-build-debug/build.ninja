@@ -55,6 +55,12 @@ build CMakeFiles/cmdLine.dir/main.cpp.o: CXX_COMPILER__cmdLine_unscanned_Debug /
   OBJECT_DIR = CMakeFiles/cmdLine.dir
   OBJECT_FILE_DIR = CMakeFiles/cmdLine.dir
 
+build CMakeFiles/cmdLine.dir/DatabaseInterface.cpp.o: CXX_COMPILER__cmdLine_unscanned_Debug /home/cst3990/project/cmdLine/DatabaseInterface.cpp || cmake_object_order_depends_target_cmdLine
+  DEP_FILE = CMakeFiles/cmdLine.dir/DatabaseInterface.cpp.o.d
+  FLAGS = -g -fdiagnostics-color=always
+  OBJECT_DIR = CMakeFiles/cmdLine.dir
+  OBJECT_FILE_DIR = CMakeFiles/cmdLine.dir
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target cmdLine
@@ -63,7 +69,7 @@ build CMakeFiles/cmdLine.dir/main.cpp.o: CXX_COMPILER__cmdLine_unscanned_Debug /
 #############################################
 # Link the executable cmdLine
 
-build cmdLine: CXX_EXECUTABLE_LINKER__cmdLine_Debug CMakeFiles/cmdLine.dir/main.cpp.o | /usr/local/lib/libmongocxx.so /usr/local/lib/libbsoncxx.so
+build cmdLine: CXX_EXECUTABLE_LINKER__cmdLine_Debug CMakeFiles/cmdLine.dir/main.cpp.o CMakeFiles/cmdLine.dir/DatabaseInterface.cpp.o | /usr/local/lib/libmongocxx.so /usr/local/lib/libbsoncxx.so
   FLAGS = -g
   LINK_LIBRARIES = -Wl,-rpath,/usr/local/lib  /usr/local/lib/libmongocxx.so  /usr/local/lib/libbsoncxx.so
   OBJECT_DIR = CMakeFiles/cmdLine.dir
