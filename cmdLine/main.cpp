@@ -5,11 +5,62 @@
 
 #include "main.h"
 
-void connectToDatabase();
+DatabaseInterface* databaseConnection;
+
+void addUserToDatabase(std::string password){
+
+    std::string username = getlogin();
+
+    bsoncxx::v_noabi::document::view_or_value newUser = make_document(
+            kvp("username", username),
+            kvp("password", password)
+    );
+
+    databaseConnection->insertUser(newUser);
+}
+
+void registerNewUser() {
+    std::string newPassword;
+    std::string confirmPassword;
+
+    bool passwordsMatch = false;
+
+    for (int passwordAttempts = 0; passwordAttempts < 3; ++passwordAttempts) {
+        std::cout << "Welcome to Key Manager\n" << std::endl;
+        std::cout << "Please set a password> ";
+
+        std::cin >> newPassword;
+        std::cout << std::endl;
+
+        std::cout << "Please confirm the new password> ";
+
+        std::cin >> confirmPassword;
+        std::cout << std::endl;
+
+        if (newPassword == confirmPassword) {
+            passwordsMatch = true;
+            addUserToDatabase(newPassword);
+            break;
+        } else {
+            std::cout << "The Passwords must match. Please try again." << std::endl << std::endl;
+        }
+    }
+
+    if(!passwordsMatch){
+        std::cout << "User not registered after three failed set password attempts" << std::endl;
+        exit(0);
+    }
+}
 
 int main() {
 
+    databaseConnection = new DatabaseInterface();
 
+    if(!databaseConnection->userRegistered()){
+        registerNewUser();
+    }
+
+    /*
     mongocxx::instance instance{};
     mongocxx::client client{mongocxx::uri{}};
 
@@ -44,6 +95,11 @@ int main() {
         std::cout << "No." << std::endl;
     }
 
+     */
     return 0;
 }
+
+
+
+
 

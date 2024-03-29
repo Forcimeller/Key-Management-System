@@ -5,16 +5,48 @@
 #ifndef CMDLINE_DATABASEINTERFACE_H
 #define CMDLINE_DATABASEINTERFACE_H
 
+#include <iostream>
+#include <cstdint>
+#include <cassert>
+#include <vector>
+#include <bsoncxx/builder/basic/document.hpp>
+#include <bsoncxx/json.hpp>
+#include <mongocxx/client.hpp>
+#include <mongocxx/instance.hpp>
+#include <mongocxx/stdx.hpp>
+#include <mongocxx/uri.hpp>
+using bsoncxx::builder::basic::kvp;
+using bsoncxx::builder::basic::make_array;
+using bsoncxx::builder::basic::make_document;
 
 class DatabaseInterface {
+public: //Public fields & Method Declarations
+    DatabaseInterface();
+    ~DatabaseInterface();
+    bool userRegistered();
+    int searchDatabase();
+    bool insertUser(bsoncxx::v_noabi::document::view_or_value collectionEntry);
+    bool addLog(std::string logNote);
+    int deleteEntry();
 
 private:
-    //private fields
+    //Private fields & Method Declarations
+    const mongocxx::instance instance = {};
+    const mongocxx::client client = {mongocxx::uri{}};
+    mongocxx::database database;
 
-public:
-    //public fields
+    bool newDatabase = true;
 
+    const std::string DATABASE_NAME = "KeyManBase";
+    const std::string LOGIN_COLLECTION_NAME = "login";
+    const std::string KEY_COLLECTION_NAME = "keys";
+    const std::string LOG_COLLECTION_NAME = "logs";
 
+    void connectToServer();
+    void searchForDocument();
+    bool insertDocument(std::string collectionName,
+                        bsoncxx::v_noabi::document::view_or_value collectionEntry);
+    int deleteDocument();
 };
 
 #endif //CMDLINE_DATABASEINTERFACE_H
