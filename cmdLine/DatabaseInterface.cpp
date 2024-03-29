@@ -52,9 +52,6 @@ bool DatabaseInterface::userRegistered(){
     return false;
 }
 
-int DatabaseInterface::searchDatabase() {
-    return 0;
-}
 
 bool DatabaseInterface::insertUser(bsoncxx::v_noabi::document::view_or_value collectionEntry) {
 
@@ -64,6 +61,22 @@ bool DatabaseInterface::insertUser(bsoncxx::v_noabi::document::view_or_value col
     bool actionLogged = this->addLog("User Added to " + this->LOGIN_COLLECTION_NAME);
 
     return (documentInserted && actionLogged);
+}
+
+std::string DatabaseInterface::findUserPassword(std::string username) {
+
+    bsoncxx::v_noabi::document::view_or_value searchTerm =
+            make_document(kvp("username", username));
+
+    core::optional<bsoncxx::document::value> result =
+            this->searchForSingleDocument(LOGIN_COLLECTION_NAME, searchTerm);
+
+    bsoncxx::document::view resultDocument = result->view();
+
+    bsoncxx::document::element passwordKvp = resultDocument["password"];
+
+    std::string password = passwordKvp.get_value().get_string().value.to_string();
+    return password;
 }
 
 bool DatabaseInterface::addLog(std::string logNote) {
@@ -85,8 +98,15 @@ int DatabaseInterface::deleteEntry() {
     return 0;
 }
 
-void DatabaseInterface::searchForDocument() {
+core::optional<bsoncxx::document::value> DatabaseInterface::searchForSingleDocument
+(std::string collectionName, bsoncxx::v_noabi::document::view_or_value searchCriteria){
 
+    //Declaration of the target collection (table) to query
+    auto collection = this->database[collectionName];
+
+    core::optional<bsoncxx::document::value> result = collection.find_one(searchCriteria);
+
+    return result;
 }
 
 bool DatabaseInterface::insertDocument(std::string collectionName,
@@ -110,6 +130,8 @@ bool DatabaseInterface::insertDocument(std::string collectionName,
 int DatabaseInterface::deleteDocument() {
     return 0;
 }
+
+
 
 
 

@@ -52,12 +52,32 @@ void registerNewUser() {
     }
 }
 
-int main() {
+void checkPassword(std::string password) {
+    //first we fetch the username so that we can query using it
+    std::string username = getlogin();
+
+    //mow we do the actual query to fetch the password
+    std::string storedPassword = databaseConnection->findUserPassword(username);
+
+    //then we compare the passwords.
+    if(storedPassword == password){
+        databaseConnection->addLog("Successful login conducted by user: " + username);
+    } else {
+        databaseConnection->addLog("Failed login attempt made by user: " + username);
+        std::cout << "Incorrect Password." << std::endl;
+    }
+
+}
+
+int main(int argc, char** argv) {
 
     databaseConnection = new DatabaseInterface();
 
     if(!databaseConnection->userRegistered()){
         registerNewUser();
+    } else {
+        std::string password = "p";
+        checkPassword(password);
     }
 
     /*
@@ -98,6 +118,8 @@ int main() {
      */
     return 0;
 }
+
+
 
 
 
