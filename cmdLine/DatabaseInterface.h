@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <cstdint>
+#include <csignal>
 #include <cassert>
 #include <vector>
 #include <bsoncxx/builder/basic/document.hpp>
@@ -24,9 +25,8 @@ public: //Public fields & Method Declarations
     DatabaseInterface();
     ~DatabaseInterface();
     bool userRegistered();
-    bool insertUser(bsoncxx::v_noabi::document::view_or_value collectionEntry);
+    bool insertUser(std::string password);
     bool addLog(std::string logNote);
-    int deleteEntry();
     std::string findUserPassword(std::string username);
 
 private:

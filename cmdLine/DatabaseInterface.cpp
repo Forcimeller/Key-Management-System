@@ -5,10 +5,12 @@
 
 #include "DatabaseInterface.h"
 
+/* Public: Constructor (just calls DatabaseInterface::connectToServer()) */
 DatabaseInterface::DatabaseInterface() {
     connectToServer();
 }
 
+/* Public: Responsible for getting the password based on the user's username */
 void DatabaseInterface::connectToServer() {
 
     auto databaseConnection = client[this->DATABASE_NAME];
@@ -28,6 +30,7 @@ void DatabaseInterface::connectToServer() {
     this->database = databaseConnection;
 }
 
+/* Public: Responsible for determining whether the user exists */
 bool DatabaseInterface::userRegistered(){
 
     //None of this is possible of the database doesn't exist.
@@ -52,9 +55,17 @@ bool DatabaseInterface::userRegistered(){
     return false;
 }
 
+/* Public: Responsible for adding the new user */
+bool DatabaseInterface::insertUser(std::string password) {
 
-bool DatabaseInterface::insertUser(bsoncxx::v_noabi::document::view_or_value collectionEntry) {
+    //fetching the user's username from the database
+    std::string username = getlogin();
 
+    //making the document which will be added to the database
+    bsoncxx::v_noabi::document::view_or_value collectionEntry = make_document(
+            kvp("username", username),
+            kvp("password", password)
+    );
     bool documentInserted = this->insertDocument(this->LOGIN_COLLECTION_NAME,
                                            collectionEntry);
 
@@ -63,6 +74,7 @@ bool DatabaseInterface::insertUser(bsoncxx::v_noabi::document::view_or_value col
     return (documentInserted && actionLogged);
 }
 
+/* Public: Responsible for getting the password based on the user's username */
 std::string DatabaseInterface::findUserPassword(std::string username) {
 
     bsoncxx::v_noabi::document::view_or_value searchTerm =
@@ -79,6 +91,7 @@ std::string DatabaseInterface::findUserPassword(std::string username) {
     return password;
 }
 
+/* Public: Responsible for adding logs */
 bool DatabaseInterface::addLog(std::string logNote) {
 
     //Time of call
@@ -94,10 +107,7 @@ bool DatabaseInterface::addLog(std::string logNote) {
                    newlog);
 }
 
-int DatabaseInterface::deleteEntry() {
-    return 0;
-}
-
+/* Private: Responsible for getting a single document using the given criteria */
 core::optional<bsoncxx::document::value> DatabaseInterface::searchForSingleDocument
 (std::string collectionName, bsoncxx::v_noabi::document::view_or_value searchCriteria){
 
@@ -109,6 +119,7 @@ core::optional<bsoncxx::document::value> DatabaseInterface::searchForSingleDocum
     return result;
 }
 
+/* Private: Responsible for getting a single document using the given criteria */
 bool DatabaseInterface::insertDocument(std::string collectionName,
                                        bsoncxx::v_noabi::document::view_or_value collectionEntry) {
 
@@ -116,15 +127,10 @@ bool DatabaseInterface::insertDocument(std::string collectionName,
         auto collection = this->database[collectionName];
 
         //The actual insertion into the collection
-        //core::optional<mongocxx::result::insert_one> insert_one_result;
-        //insert_one_result =
+        core::optional<mongocxx::result::insert_one>
+                insertOneDocument = collection.insert_one(collectionEntry);
 
-        collection.insert_one(collectionEntry);
-
-    //bsoncxx::types::bson_value::view doc_id = insert_one_result->inserted_id();
-    //assert(insert_one_result);
-
-    return true; //insert_one_result.operator bool();
+        return insertOneDocument.operator bool();
 }
 
 int DatabaseInterface::deleteDocument() {

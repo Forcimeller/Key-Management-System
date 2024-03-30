@@ -7,27 +7,16 @@
 
 DatabaseInterface* databaseConnection;
 
-void addUserToDatabase(std::string password){
-
-    std::string username = getlogin();
-
-    bsoncxx::v_noabi::document::view_or_value newUser = make_document(
-            kvp("username", username),
-            kvp("password", password)
-    );
-
-    databaseConnection->insertUser(newUser);
-}
-
 void registerNewUser() {
     std::string newPassword;
     std::string confirmPassword;
 
     bool passwordsMatch = false;
 
+    //Menu display / input capture - For loop to allow 3 attempts
     for (int passwordAttempts = 0; passwordAttempts < 3; ++passwordAttempts) {
         std::cout << "Welcome to Key Manager\n" << std::endl;
-        std::cout << "Please set a password> ";
+        std::cout << "Please set a new password> ";
 
         std::cin >> newPassword;
         std::cout << std::endl;
@@ -37,10 +26,14 @@ void registerNewUser() {
         std::cin >> confirmPassword;
         std::cout << std::endl;
 
+        //Breaks loop if password entry is confirmed
         if (newPassword == confirmPassword) {
             passwordsMatch = true;
-            addUserToDatabase(newPassword);
+
+            //Inserts into database here
+            databaseConnection->insertUser(newPassword);
             break;
+
         } else {
             std::cout << "The Passwords must match. Please try again." << std::endl << std::endl;
         }
@@ -59,7 +52,7 @@ void checkPassword(std::string password) {
     //mow we do the actual query to fetch the password
     std::string storedPassword = databaseConnection->findUserPassword(username);
 
-    //then we compare the passwords.
+    //then we compare the passwords. Add logs depending on success
     if(storedPassword == password){
         databaseConnection->addLog("Successful login conducted by user: " + username);
     } else {

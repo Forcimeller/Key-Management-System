@@ -8,7 +8,6 @@
 
 #include <iostream>
 #include <cstdint>
-#include <iostream>
 #include <vector>
 #include <bsoncxx/builder/basic/document.hpp>
 #include <bsoncxx/json.hpp>
