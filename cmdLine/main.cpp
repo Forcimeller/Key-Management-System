@@ -7,15 +7,13 @@
 
 DatabaseInterface* databaseConnection;
 
-void registerNewUser() {
+std::string fetchPassword(){
     std::string newPassword;
     std::string confirmPassword;
 
     bool passwordsMatch = false;
 
-    //Menu display / input capture - For loop to allow 3 attempts
     for (int passwordAttempts = 0; passwordAttempts < 3; ++passwordAttempts) {
-        std::cout << "Welcome to Key Manager\n" << std::endl;
         std::cout << "Please set a new password> ";
 
         std::cin >> newPassword;
@@ -29,20 +27,27 @@ void registerNewUser() {
         //Breaks loop if password entry is confirmed
         if (newPassword == confirmPassword) {
             passwordsMatch = true;
-
-            //Inserts into database here
-            databaseConnection->insertUser(newPassword);
-            break;
+            //returns password here
+            return newPassword;
 
         } else {
             std::cout << "The Passwords must match. Please try again." << std::endl << std::endl;
         }
     }
 
-    if(!passwordsMatch){
-        std::cout << "User not registered after three failed set password attempts" << std::endl;
-        exit(0);
-    }
+    std::cout << "Password not registered after three failed set password attempts" << std::endl;
+    exit(0);
+}
+
+void registerNewUser() {
+
+    std::cout << "Welcome to Key Manager\n" << std::endl;
+
+    std::string password = fetchPassword();
+
+    //Inserts into database here
+    databaseConnection->insertUser(password);
+
 }
 
 void checkPassword(std::string password) {
