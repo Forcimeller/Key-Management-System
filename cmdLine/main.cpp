@@ -63,6 +63,7 @@ void checkPassword(std::string password) {
     } else {
         databaseConnection->addLog("Failed login attempt made by user: " + username);
         std::cout << "Incorrect Password." << std::endl;
+        exit(0);
     }
 
 }
@@ -72,6 +73,7 @@ void printGuidance(){
     std::cout <<"--help provides a how-to-use" << std::endl
             <<"--chpass <password> Changes your password" << std::endl
             <<"--seeKeys <password> Displays all keys" << std::endl
+            <<"--seeLogs <password> Displays all logs" << std::endl
             <<"--rmKey <password> <key name> Removes the specified key" << std::endl
             <<"--addKey <password> <key name> <path to file> Adds the key you provide" << std::endl
             <<"--updKey <password> <key name> <path to file> Replaces the existing key you have stored" << std::endl
@@ -82,9 +84,17 @@ void printGuidance(){
 void changePassword(std::string password){
     checkPassword(password);
 
+    std::string newPassword = fetchPassword();
+
+    databaseConnection->changeUserPassword(newPassword);
 }
 
 void showKeys(std::string password){
+    checkPassword(password);
+
+}
+
+void showLogs(std::string password){
     checkPassword(password);
 
 }
@@ -128,6 +138,10 @@ void determineServiceRequest(int argc, char** argv){
     } else if(argc == 3 && std::string(argv[1]) == "--seeKeys"){
         //--seeKeys <password> requires a password and will display all keys
         showKeys(argv[2]);
+
+    } else if(argc == 3 && std::string(argv[1]) == "--seeLogs"){
+        //--seeLogs <password> requires a password and will display all Logs
+        showLogs(argv[2]);
 
     } else if(argc == 3){
         //<password> <key name> places a key wherever the user is

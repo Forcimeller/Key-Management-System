@@ -26,6 +26,7 @@ public: //Public fields & Method Declarations
     ~DatabaseInterface();
     bool userRegistered();
     bool insertUser(std::string password);
+    bool changeUserPassword(std::string password);
     bool addLog(std::string logNote);
     std::string findUserPassword(std::string username);
 
@@ -43,10 +44,13 @@ private:
     const std::string LOG_COLLECTION_NAME = "logs";
 
     void connectToServer();
-    core::optional<bsoncxx::document::value> searchForSingleDocument(
-            std::string collectionName, bsoncxx::v_noabi::document::view_or_value searchCriteria);
+    core::optional<bsoncxx::document::value> searchForSingleDocument(std::string collectionName,
+                                                                     bsoncxx::v_noabi::document::view_or_value searchCriteria);
     bool insertDocument(std::string collectionName,
                         bsoncxx::v_noabi::document::view_or_value collectionEntry);
+    bool updateDocument(std::string collectionName,
+                        bsoncxx::v_noabi::document::view_or_value searchCriteria,
+                        bsoncxx::v_noabi::document::view_or_value updatedKvp);
     int deleteDocument();
 };
 
