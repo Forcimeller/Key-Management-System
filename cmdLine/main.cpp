@@ -7,15 +7,13 @@
 
 DatabaseInterface* databaseConnection;
 
-void registerNewUser() {
+std::string fetchPassword(){
     std::string newPassword;
     std::string confirmPassword;
 
     bool passwordsMatch = false;
 
-    //Menu display / input capture - For loop to allow 3 attempts
     for (int passwordAttempts = 0; passwordAttempts < 3; ++passwordAttempts) {
-        std::cout << "Welcome to Key Manager\n" << std::endl;
         std::cout << "Please set a new password> ";
 
         std::cin >> newPassword;
@@ -29,20 +27,27 @@ void registerNewUser() {
         //Breaks loop if password entry is confirmed
         if (newPassword == confirmPassword) {
             passwordsMatch = true;
-
-            //Inserts into database here
-            databaseConnection->insertUser(newPassword);
-            break;
+            //returns password here
+            return newPassword;
 
         } else {
             std::cout << "The Passwords must match. Please try again." << std::endl << std::endl;
         }
     }
 
-    if(!passwordsMatch){
-        std::cout << "User not registered after three failed set password attempts" << std::endl;
-        exit(0);
-    }
+    std::cout << "Password not registered after three failed set password attempts" << std::endl;
+    exit(0);
+}
+
+void registerNewUser() {
+
+    std::cout << "Welcome to Key Manager\n" << std::endl;
+
+    std::string password = fetchPassword();
+
+    //Inserts into database here
+    databaseConnection->insertUser(password);
+
 }
 
 void checkPassword(std::string password) {
@@ -58,7 +63,124 @@ void checkPassword(std::string password) {
     } else {
         databaseConnection->addLog("Failed login attempt made by user: " + username);
         std::cout << "Incorrect Password." << std::endl;
+        exit(0);
     }
+
+}
+
+//Boilerplate guidance on how touse program
+void printGuidance(){
+
+    std::cout <<"--help provides a how-to-use" << std::endl
+            <<"--chpass <password> Changes your password" << std::endl
+            <<"--seeKeys <password> Displays all keys" << std::endl
+            <<"--seeLogs <password> Displays all logs" << std::endl
+            <<"--rmKey <password> <key name> Removes the specified key" << std::endl
+            <<"--addKey <password> <key name> <path to file> Adds the key you provide" << std::endl
+            <<"--updKey <password> <key name> <path to file> Replaces the existing key you have stored" << std::endl
+            <<"<password> <key name> Places the key you request in the current directory." << std::endl
+            <<"<password> <key name> <path to directory> Places the key in a specified directory." << std::endl;
+}
+
+//A password changing wizard.
+void changePassword(std::string password){
+    checkPassword(password);
+
+    std::string newPassword = fetchPassword();
+
+    databaseConnection->changeUserPassword(newPassword);
+}
+
+//Shows all of the stored keys in the database
+void showKeys(std::string password){
+    checkPassword(password);
+
+}
+
+//shows all of the logs in the database
+void showLogs(std::string password){
+    checkPassword(password);
+
+}
+
+//Gives the user the key
+void exportKey(std::string password, std::string keyName, std::string path){
+    checkPassword(password);
+
+}
+
+//deletes a stored key
+void removeKey(std::string password, std::string keyName){
+    checkPassword(password);
+
+}
+
+//Adds a new key to the database
+void addNewKey(std::string password, std::string keyName, std::string path){
+    checkPassword(password);
+
+}
+
+//Replaces an existing key with the given key
+void updateKey(std::string password, std::string keyName, std::string path){
+    checkPassword(password);
+
+}
+
+//Determines and diverts the program based upon the arguments given on program call
+void determineServiceRequest(int argc, char** argv){
+
+    // Only one argument given aside from program call
+    if(argc < 2){
+        std::cout << "This command cannot be run on its own. For more information, run again using the"
+        << "For more information run with the --help flag\n\n";
+
+    } else if(argc == 2 && std::string(argv[1])  == "--help"){
+        // --help provides a how-to-use
+        printGuidance();
+
+    } else if(argc == 3 && std::string(argv[1]) == "--chpass"){
+        //--chpass <password> requires a password and allows you to change your password
+        changePassword(argv[2]);
+
+    } else if(argc == 3 && std::string(argv[1]) == "--seeKeys"){
+        //--seeKeys <password> requires a password and will display all keys
+        showKeys(argv[2]);
+
+    } else if(argc == 3 && std::string(argv[1]) == "--seeLogs"){
+        //--seeLogs <password> requires a password and will display all Logs
+        showLogs(argv[2]);
+
+    } else if(argc == 3){
+        //<password> <key name> places a key wherever the user is
+        std::string currentDirectory;
+        exportKey(argv[1], argv[2], currentDirectory);
+
+    } else if(argc == 4 && std::string(argv[1]) == "--rmKey"){
+        //--rmKey <password> <key name> removes the specified key
+        removeKey(argv[3], argv[4]);
+
+    } else if(argc == 4){
+        //<password> <key name> <path to directory> places the key in a specified directory.
+        exportKey(argv[2], argv[3], argv[4]);
+
+    } else if(argc == 5 && std::string(argv[1]) == "--addKey"){
+        //--addKey <password> <key name> <path to file> adds the specified key
+        addNewKey(argv[2], argv[3], argv[4]);
+
+    } else if(argc == 5 && std::string(argv[1]) == "--updKey"){
+        //--updKey <password> <key name> <path to file> replaces an existing key
+        updateKey(argv[2], argv[3], argv[4]);
+
+    } else {
+        //Invalid command
+        std::cout << "KeyMan: That command could not be recognised. "
+                    << "To see how to use this program, run again with the \"--help\" flag. " << std::endl;
+    }
+
+
+
+
 
 }
 
@@ -68,9 +190,14 @@ int main(int argc, char** argv) {
 
     if(!databaseConnection->userRegistered()){
         registerNewUser();
+
     } else {
-        std::string password = "p";
-        checkPassword(password);
+
+        determineServiceRequest(argc, argv);
+
+        //std::string password = "p";
+        //checkPassword(password);
+        //std::cout << argc << "  \n" << argv[1];
     }
 
     /*

@@ -74,6 +74,33 @@ bool DatabaseInterface::insertUser(std::string password) {
     return (documentInserted && actionLogged);
 }
 
+/* Public: Responsible for updating the user's password */
+bool DatabaseInterface::changeUserPassword(std::string password) {
+
+    //fetching the user's username from the database
+    std::string username = getlogin();
+
+    //making the criteria which we need to match before we add to the database
+    bsoncxx::v_noabi::document::view_or_value searchCriterion = make_document(
+            kvp("username", username)
+    );
+
+    //making the key-value pair which will replace an existing pair
+    bsoncxx::v_noabi::document::view_or_value newPassword = make_document(
+            kvp("password", password)
+    );
+
+    //execute
+    bool documentUpdated = this->updateDocument(this->LOGIN_COLLECTION_NAME,
+                                                searchCriterion,
+                                                newPassword);
+
+    //Log this event
+    bool actionLogged = this->addLog("User ("+ username +") updated their password.");
+
+    return (documentUpdated && actionLogged);
+}
+
 /* Public: Responsible for getting the password based on the user's username */
 std::string DatabaseInterface::findUserPassword(std::string username) {
 
@@ -131,6 +158,25 @@ bool DatabaseInterface::insertDocument(std::string collectionName,
                 insertOneDocument = collection.insert_one(collectionEntry);
 
         return insertOneDocument.operator bool();
+}
+
+/* Private: Responsible for getting a single document using the given criteria */
+bool DatabaseInterface::updateDocument
+        (std::string collectionName,
+         bsoncxx::v_noabi::document::view_or_value searchCriteria,
+         bsoncxx::v_noabi::document::view_or_value updatedKvp){
+
+    //Declaration of the target collection (table) to query
+    auto collection = this->database[collectionName];
+
+    //the command that will be added to the virtual shell to find and update the specified kvp
+    bsoncxx::view_or_value<bsoncxx::document::view, bsoncxx::document::value> updateCommand =
+            make_document(kvp("$set", updatedKvp));
+
+    //Execute
+    core::optional<mongocxx::result::update> result = collection.update_one(searchCriteria, updateCommand);
+
+    return result.operator bool();
 }
 
 int DatabaseInterface::deleteDocument() {
