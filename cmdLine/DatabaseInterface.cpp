@@ -95,6 +95,7 @@ bool DatabaseInterface::changeUserPassword(std::string password) {
                                                 searchCriterion,
                                                 newPassword);
 
+    //Log this event
     bool actionLogged = this->addLog("User ("+ username +") updated their password.");
 
     return (documentUpdated && actionLogged);
@@ -168,9 +169,11 @@ bool DatabaseInterface::updateDocument
     //Declaration of the target collection (table) to query
     auto collection = this->database[collectionName];
 
+    //the command that will be added to the virtual shell to find and update the specified kvp
     bsoncxx::view_or_value<bsoncxx::document::view, bsoncxx::document::value> updateCommand =
             make_document(kvp("$set", updatedKvp));
 
+    //Execute
     core::optional<mongocxx::result::update> result = collection.update_one(searchCriteria, updateCommand);
 
     return result.operator bool();

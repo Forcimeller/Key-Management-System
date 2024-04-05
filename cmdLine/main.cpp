@@ -68,6 +68,7 @@ void checkPassword(std::string password) {
 
 }
 
+//Boilerplate guidance on how touse program
 void printGuidance(){
 
     std::cout <<"--help provides a how-to-use" << std::endl
@@ -81,6 +82,7 @@ void printGuidance(){
             <<"<password> <key name> <path to directory> Places the key in a specified directory." << std::endl;
 }
 
+//A password changing wizard.
 void changePassword(std::string password){
     checkPassword(password);
 
@@ -89,37 +91,43 @@ void changePassword(std::string password){
     databaseConnection->changeUserPassword(newPassword);
 }
 
+//Shows all of the stored keys in the database
 void showKeys(std::string password){
     checkPassword(password);
 
 }
 
+//shows all of the logs in the database
 void showLogs(std::string password){
     checkPassword(password);
 
 }
 
+//Gives the user the key
 void exportKey(std::string password, std::string keyName, std::string path){
     checkPassword(password);
 
 }
 
+//deletes a stored key
 void removeKey(std::string password, std::string keyName){
     checkPassword(password);
 
 }
 
+//Adds a new key to the database
 void addNewKey(std::string password, std::string keyName, std::string path){
     checkPassword(password);
 
 }
 
+//Replaces an existing key with the given key
 void updateKey(std::string password, std::string keyName, std::string path){
     checkPassword(password);
 
 }
 
-
+//Determines and diverts the program based upon the arguments given on program call
 void determineServiceRequest(int argc, char** argv){
 
     // Only one argument given aside from program call
