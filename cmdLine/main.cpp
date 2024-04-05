@@ -6,6 +6,7 @@
 #include "main.h"
 
 DatabaseInterface* databaseConnection;
+FileSystemInterface* fileManager;
 
 std::string fetchPassword(){
     std::string newPassword;
@@ -187,17 +188,18 @@ void determineServiceRequest(int argc, char** argv){
 int main(int argc, char** argv) {
 
     databaseConnection = new DatabaseInterface();
+    fileManager = new FileSystemInterface();
 
     if(!databaseConnection->userRegistered()){
         registerNewUser();
 
     } else {
 
-        determineServiceRequest(argc, argv);
+        //determineServiceRequest(argc, argv);
 
-        //std::string password = "p";
-        //checkPassword(password);
-        //std::cout << argc << "  \n" << argv[1];
+        std::cout << fileManager->getFileAsString("id_rsa");
+
+
     }
 
     /*

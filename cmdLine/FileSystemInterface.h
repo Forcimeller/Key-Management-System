@@ -6,8 +6,20 @@
 #ifndef CMDLINE_FILESYSTEMINTERFACE_H
 #define CMDLINE_FILESYSTEMINTERFACE_H
 
+#include <iostream>
+#include <fstream>
+#include <filesystem>
+
 class FileSystemInterface {
-    
+public:
+    FileSystemInterface();
+    std::string getFileAsString(std::string path);
+
+private:
+    std::filesystem::path currentDirectory;
+    bool createFile(std::string fileContents, std::string path);
+    std::string readFile(std::string path);
+    bool deleteFile(std::string path);
 
 };
 

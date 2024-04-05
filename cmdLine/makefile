@@ -6,7 +6,7 @@ LIBS = -lmongocxx -lbsoncxx
 .PHONY : all
 all : program
 
-program: main.cpp DatabaseInterface.o
+program: main.cpp DatabaseInterface.o FileSystemInterface.o
 	$(CXX) $(CXXFLAGS) -o keyMan main.cpp main.h DatabaseInterface.o FileSystemInterface.o $(LDFLAGS) $(LIBS)
 
 DatabaseInterface.o: DatabaseInterface.cpp DatabaseInterface.h
