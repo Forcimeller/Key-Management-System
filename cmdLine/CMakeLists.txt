@@ -11,6 +11,8 @@ find_library(BSONCXX_LIBRARIES NAMES bsoncxx PATHS /usr/local/lib)
 add_executable(cmdLine main.cpp
         main.h
         DatabaseInterface.cpp
-        DatabaseInterface.h)
+        DatabaseInterface.h
+        FileSystemInterface.cpp
+        FileSystemInterface.h)
 
 target_link_libraries(cmdLine ${MONGOCXX_LIBRARIES} ${BSONCXX_LIBRARIES})
