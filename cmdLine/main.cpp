@@ -201,6 +201,9 @@ int main(int argc, char** argv) {
 
         fileManager->saveFile(file);
 
+        //sleep(10);
+
+        fileManager->deleteFile();
     }
 
     /*

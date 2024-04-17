@@ -15,10 +15,11 @@ public:
     FileSystemInterface();
     std::string getFileAsString(std::string path);
     bool saveFile(std::string fileContents);
-    bool deleteFile(std::string path);
+    bool deleteFile();
 
 private:
     std::filesystem::path currentDirectory;
+    const std::string keyFileName = "keyfile";
     std::string readFile(std::string path);
 
 

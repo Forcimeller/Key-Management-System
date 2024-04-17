@@ -14,17 +14,25 @@ std::string FileSystemInterface::getFileAsString(std::string path) {
 
 bool FileSystemInterface::saveFile(std::string fileContents) {
 
-    std::ofstream newFile("keyfile");
+    try {
+        std::ofstream newFile(keyFileName);
 
-    newFile << fileContents << std::endl;
+        newFile << fileContents << std::endl;
 
-    newFile.close();
+        newFile.close();
 
-    return true;
+        return true;
+
+    } catch(const std::exception& error) {
+
+        std::cout << "file could not be created" << std::endl;
+
+    }
+    return false;
 }
 
 std::string FileSystemInterface::readFile(std::string path) {
-    std::string file = "";
+    std::string file;
 
     //convert string path into path object
     std::filesystem::path pathObject(path);
@@ -48,7 +56,17 @@ std::string FileSystemInterface::readFile(std::string path) {
     return file;
 }
 
-bool FileSystemInterface::deleteFile(std::string path) {
+bool FileSystemInterface::deleteFile() {
+
+    try {
+        if(std::filesystem::remove(keyFileName)){
+            return true;
+        } else {
+            return false;
+        }
+    } catch (const std::filesystem::filesystem_error& error) {
+        std::cout << "There was an error removing the file." << std::endl;
+    }
     return false;
 }
 
