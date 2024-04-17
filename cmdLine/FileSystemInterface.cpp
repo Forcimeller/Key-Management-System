@@ -19,8 +19,11 @@ bool FileSystemInterface::createFile(std::string fileContents, std::string path)
 std::string FileSystemInterface::readFile(std::string path) {
     std::string file = "";
 
+    //convert string path into path object
+    std::filesystem::path pathObject(path);
+
     //Open the file creating a stream
-    std::ifstream sourceFile(path);
+    std::ifstream sourceFile(pathObject);
 
     //Verify vile opening successful
     if(sourceFile.is_open()){
