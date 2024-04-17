@@ -74,6 +74,23 @@ bool DatabaseInterface::insertUser(std::string password) {
     return (documentInserted && actionLogged);
 }
 
+/* Public: Responsible for adding keys to the database */
+bool DatabaseInterface::insertKey(std::string keyName, std::string key) {
+
+    //making the document which will be added to the database
+    bsoncxx::v_noabi::document::view_or_value collectionEntry = make_document(
+            kvp("keyName", keyName),
+            kvp("keySample", key.substr(36, 5)),  // a sample of the key after the header
+            kvp("key", key)
+    );
+    bool documentInserted = this->insertDocument(this->KEY_COLLECTION_NAME,
+                                                 collectionEntry);
+
+    bool actionLogged = this->addLog("New Key " + key.substr(36, 5) + " added to database.");
+
+    return (documentInserted && actionLogged);
+}
+
 /* Public: Responsible for updating the user's password */
 bool DatabaseInterface::changeUserPassword(std::string password) {
 

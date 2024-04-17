@@ -120,6 +120,10 @@ void removeKey(std::string password, std::string keyName){
 void addNewKey(std::string password, std::string keyName, std::string path){
     checkPassword(password);
 
+    std::string keyFromFile = fileManager->getFileAsString(path);
+    databaseConnection->addLog("New file (\"" + path + "\" read by client.");
+
+    databaseConnection->insertKey(keyName, keyFromFile);
 }
 
 //Replaces an existing key with the given key
@@ -195,8 +199,9 @@ int main(int argc, char** argv) {
 
     } else {
 
-        //determineServiceRequest(argc, argv);
+        determineServiceRequest(argc, argv);
 
+        /*
         std::string file = fileManager->getFileAsString("/home/cst3990/.ssh/id_rsa.pub");
 
         fileManager->saveFile(file);
@@ -204,6 +209,7 @@ int main(int argc, char** argv) {
         //sleep(10);
 
         fileManager->deleteFile();
+         */
     }
 
     /*

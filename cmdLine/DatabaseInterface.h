@@ -26,6 +26,7 @@ public: //Public fields & Method Declarations
     ~DatabaseInterface();
     bool userRegistered();
     bool insertUser(std::string password);
+    bool insertKey(std::string keyName, std::string key);
     bool changeUserPassword(std::string password);
     bool addLog(std::string logNote);
     std::string findUserPassword(std::string username);
