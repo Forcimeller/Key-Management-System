@@ -12,8 +12,15 @@ std::string FileSystemInterface::getFileAsString(std::string path) {
     return fileContents;
 }
 
-bool FileSystemInterface::createFile(std::string fileContents, std::string path) {
-    return false;
+bool FileSystemInterface::saveFile(std::string fileContents) {
+
+    std::ofstream newFile("keyfile");
+
+    newFile << fileContents << std::endl;
+
+    newFile.close();
+
+    return true;
 }
 
 std::string FileSystemInterface::readFile(std::string path) {

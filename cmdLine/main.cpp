@@ -197,8 +197,9 @@ int main(int argc, char** argv) {
 
         //determineServiceRequest(argc, argv);
 
-        std::cout << fileManager->getFileAsString("/home/cst3990/.ssh/id_rsa.pub");
+        std::string file = fileManager->getFileAsString("/home/cst3990/.ssh/id_rsa.pub");
 
+        fileManager->saveFile(file);
 
     }
 
