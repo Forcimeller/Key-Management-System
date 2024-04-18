@@ -6,6 +6,7 @@
 #include "main.h"
 
 DatabaseInterface* databaseConnection;
+FileSystemInterface* fileManager;
 
 std::string fetchPassword(){
     std::string newPassword;
@@ -119,6 +120,12 @@ void removeKey(std::string password, std::string keyName){
 void addNewKey(std::string password, std::string keyName, std::string path){
     checkPassword(password);
 
+    //Fetch key file from system and log it
+    std::string keyFromFile = fileManager->getFileAsString(path);
+    databaseConnection->addLog("New file (\"" + path + "\" read by client.");
+
+    //Insert that file into the database
+    databaseConnection->insertKey(keyName, keyFromFile);
 }
 
 //Replaces an existing key with the given key
@@ -187,6 +194,7 @@ void determineServiceRequest(int argc, char** argv){
 int main(int argc, char** argv) {
 
     databaseConnection = new DatabaseInterface();
+    fileManager = new FileSystemInterface();
 
     if(!databaseConnection->userRegistered()){
         registerNewUser();
@@ -195,9 +203,15 @@ int main(int argc, char** argv) {
 
         determineServiceRequest(argc, argv);
 
-        //std::string password = "p";
-        //checkPassword(password);
-        //std::cout << argc << "  \n" << argv[1];
+        /*
+        std::string file = fileManager->getFileAsString("/home/cst3990/.ssh/id_rsa.pub");
+
+        fileManager->saveFile(file);
+
+        //sleep(10);
+
+        fileManager->deleteFile();
+         */
     }
 
     /*

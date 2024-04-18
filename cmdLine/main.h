@@ -16,6 +16,7 @@
 #include <mongocxx/stdx.hpp>
 #include <mongocxx/uri.hpp>
 #include "DatabaseInterface.h"
+#include "FileSystemInterface.h"
 #include "unistd.h"
 
 using bsoncxx::builder::basic::kvp;
