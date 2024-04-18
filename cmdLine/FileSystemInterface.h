@@ -12,17 +12,17 @@
 
 class FileSystemInterface {
 public:
+    //Public fields & Method Declarations
     FileSystemInterface();
     std::string getFileAsString(std::string path);
     bool saveFile(std::string fileContents);
     bool deleteFile();
 
 private:
+    //Private fields & Method Declarations
     std::filesystem::path currentDirectory;
     const std::string keyFileName = "keyfile";
     std::string readFile(std::string path);
-
-
 };
 
 

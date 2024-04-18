@@ -5,6 +5,13 @@
 
 #include "FileSystemInterface.h"
 
+/* Public: Constructor */
+FileSystemInterface::FileSystemInterface(){
+    this->currentDirectory = std::filesystem::current_path();
+}
+
+/* Public: Responsible for opening the calling the file reader
+   and returning the file as a string */
 std::string FileSystemInterface::getFileAsString(std::string path) {
 
     std::string fileContents = readFile(path);
@@ -12,6 +19,7 @@ std::string FileSystemInterface::getFileAsString(std::string path) {
     return fileContents;
 }
 
+/* Public: Responsible for creating files in the current directory */
 bool FileSystemInterface::saveFile(std::string fileContents) {
 
     try {
@@ -31,6 +39,22 @@ bool FileSystemInterface::saveFile(std::string fileContents) {
     return false;
 }
 
+/* Public: Responsible for deleting the key file from the current directory */
+bool FileSystemInterface::deleteFile() {
+
+    try {
+        if(std::filesystem::remove(keyFileName)){
+            return true;
+        } else {
+            return false;
+        }
+    } catch (const std::filesystem::filesystem_error& error) {
+        std::cout << "There was an error removing the file." << std::endl;
+    }
+    return false;
+}
+
+/* Private: Responsible for reading files from the directory */
 std::string FileSystemInterface::readFile(std::string path) {
     std::string file;
 
@@ -54,22 +78,4 @@ std::string FileSystemInterface::readFile(std::string path) {
     }
 
     return file;
-}
-
-bool FileSystemInterface::deleteFile() {
-
-    try {
-        if(std::filesystem::remove(keyFileName)){
-            return true;
-        } else {
-            return false;
-        }
-    } catch (const std::filesystem::filesystem_error& error) {
-        std::cout << "There was an error removing the file." << std::endl;
-    }
-    return false;
-}
-
- FileSystemInterface::FileSystemInterface(){
-    this->currentDirectory = std::filesystem::current_path();
 }

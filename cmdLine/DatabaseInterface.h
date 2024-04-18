@@ -21,7 +21,8 @@ using bsoncxx::builder::basic::make_array;
 using bsoncxx::builder::basic::make_document;
 
 class DatabaseInterface {
-public: //Public fields & Method Declarations
+public:
+    //Public fields & Method Declarations
     DatabaseInterface();
     ~DatabaseInterface();
     bool userRegistered();

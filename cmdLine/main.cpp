@@ -120,9 +120,11 @@ void removeKey(std::string password, std::string keyName){
 void addNewKey(std::string password, std::string keyName, std::string path){
     checkPassword(password);
 
+    //Fetch key file from system and log it
     std::string keyFromFile = fileManager->getFileAsString(path);
     databaseConnection->addLog("New file (\"" + path + "\" read by client.");
 
+    //Insert that file into the database
     databaseConnection->insertKey(keyName, keyFromFile);
 }
 
