@@ -84,7 +84,34 @@ bool DatabaseInterface::insertKey(std::string keyName, std::string key) {
         return false;
 
     //Decline if Key already exists, give user the name of the key
-    } 
+
+    } else if(documentExists("key", key, KEY_COLLECTION_NAME)) {
+
+        //query filter for the key
+        bsoncxx::v_noabi::document::view_or_value searchTerm = make_document(
+                kvp("key", key)
+        );
+
+        //Querying the database
+        core::optional<bsoncxx::document::value> result =
+                this->searchForSingleDocument(KEY_COLLECTION_NAME,
+                                              searchTerm);
+
+        //selecting the key name value
+        bsoncxx::document::view resultDocument = result->view();
+        bsoncxx::document::element keyNameKvp = resultDocument["keyName"];
+        std::string keyNameResult = keyNameKvp.get_value().get_string().value.to_string();
+
+        //message to user (tells the user the key name)
+        std::cout << "You have already added this key. You saved it as \""
+        << keyNameResult << "\"." << std::endl;
+
+        this->addLog("User attempted to add an existing key.");
+
+        return false;
+    }
+
+
 
 
     //making the document which will be added to the database
