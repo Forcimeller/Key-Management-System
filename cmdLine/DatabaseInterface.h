@@ -53,6 +53,7 @@ private:
     bool updateDocument(std::string collectionName,
                         bsoncxx::v_noabi::document::view_or_value searchCriteria,
                         bsoncxx::v_noabi::document::view_or_value updatedKvp);
+    bool documentExists(std::string key, std::string value, std::string collection);
     int deleteDocument();
 };
 

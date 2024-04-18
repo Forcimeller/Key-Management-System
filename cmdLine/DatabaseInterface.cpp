@@ -77,6 +77,7 @@ bool DatabaseInterface::insertUser(std::string password) {
 /* Public: Responsible for adding keys to the database */
 bool DatabaseInterface::insertKey(std::string keyName, std::string key) {
 
+    
     //making the document which will be added to the database
     bsoncxx::v_noabi::document::view_or_value collectionEntry = make_document(
             kvp("keyName", keyName),
@@ -196,9 +197,29 @@ bool DatabaseInterface::updateDocument
     return result.operator bool();
 }
 
+bool DatabaseInterface::documentExists(std::string key,
+                                       std::string value,
+                                       std::string collection){
+
+    bsoncxx::v_noabi::document::view_or_value searchTerm =
+            make_document(kvp(key, value));
+
+    core::optional<bsoncxx::document::value> result =
+            this->searchForSingleDocument(collection, searchTerm);
+
+    bsoncxx::document::view resultDocument = result->view();
+
+    if (resultDocument.empty()){
+        return false;
+    } else {
+        return true;
+    }
+}
+
 int DatabaseInterface::deleteDocument() {
     return 0;
 }
+
 
 
 
