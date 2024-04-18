@@ -77,7 +77,16 @@ bool DatabaseInterface::insertUser(std::string password) {
 /* Public: Responsible for adding keys to the database */
 bool DatabaseInterface::insertKey(std::string keyName, std::string key) {
 
-    
+    //Decline to accept key if the key name already exists.
+    if(documentExists("keyName", keyName, KEY_COLLECTION_NAME)){
+        std::cout << "You already have a key with that name. All key names need to be unique." << std::endl;
+        this->addLog("User attempted to add a key using an existing key name");
+        return false;
+
+    //Decline if Key already exists, give user the name of the key
+    } 
+
+
     //making the document which will be added to the database
     bsoncxx::v_noabi::document::view_or_value collectionEntry = make_document(
             kvp("keyName", keyName),
@@ -207,9 +216,7 @@ bool DatabaseInterface::documentExists(std::string key,
     core::optional<bsoncxx::document::value> result =
             this->searchForSingleDocument(collection, searchTerm);
 
-    bsoncxx::document::view resultDocument = result->view();
-
-    if (resultDocument.empty()){
+    if (result->begin() == result->end()){
         return false;
     } else {
         return true;
