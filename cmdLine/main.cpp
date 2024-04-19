@@ -104,13 +104,19 @@ void showLogs(std::string password){
 
 }
 
+
 //Gives the user the key
 void exportKey(std::string password, std::string keyName, std::string path){
     checkPassword(password);
 
-    std::string fileContents = databaseConnection->
+    std::string fileContents = databaseConnection->findKey(keyName);
 
-            fileManager->saveFile()
+    fileManager->saveFile(fileContents, path);
+}
+
+//Gives user the key in the current directory
+void exportKey(std::string password, std::string keyName){
+    exportKey(password, keyName, fileManager->getCurrentDirectory());
 }
 
 //deletes a stored key
@@ -163,8 +169,7 @@ void determineServiceRequest(int argc, char** argv){
 
     } else if(argc == 3){
         //<password> <key name> places a key wherever the user is
-        std::string currentDirectory;
-        exportKey(argv[1], argv[2], currentDirectory);
+        exportKey(argv[1], argv[2]);
 
     } else if(argc == 4 && std::string(argv[1]) == "--rmKey"){
         //--rmKey <password> <key name> removes the specified key

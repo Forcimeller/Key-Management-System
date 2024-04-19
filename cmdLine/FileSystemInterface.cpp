@@ -19,8 +19,13 @@ std::string FileSystemInterface::getFileAsString(std::string path) {
     return fileContents;
 }
 
+/* Public: Returns the Current directory */
+std::string FileSystemInterface::getCurrentDirectory(){
+    return this->currentDirectory;
+}
+
 /* Public: Responsible for creating files in the current directory */
-bool FileSystemInterface::saveFile(std::string fileContents) {
+bool FileSystemInterface::saveFile(std::string fileContents, std::string directory) {
 
     try {
         std::ofstream newFile(keyFileName);
