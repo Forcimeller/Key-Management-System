@@ -67,7 +67,7 @@ bool DatabaseInterface::insertUser(std::string password) {
             kvp("password", password)
     );
     bool documentInserted = this->insertDocument(this->LOGIN_COLLECTION_NAME,
-                                           collectionEntry);
+                                                 collectionEntry);
 
     bool actionLogged = this->addLog("User Added to " + this->LOGIN_COLLECTION_NAME);
 
@@ -86,14 +86,14 @@ bool DatabaseInterface::insertKey(std::string keyName, std::string key) {
             this->addLog("User attempted to add a key using an existing key name");
             return false;
 
-        //Decline if Key already exists, give user the name of the key
+            //Decline if Key already exists, give user the name of the key
         } else if (documentExists("key", key, KEY_COLLECTION_NAME)) {
 
             std::string keyNameResult = getExistingKeyName(key);
 
             //Message to user
             std::cout << "You have already added this key. It has been saved as \""
-                         << keyNameResult << "\"." << std::endl;
+                      << keyNameResult << "\"." << std::endl;
             this->addLog("User attempted to add an existing key.");
 
             return false;
@@ -111,6 +111,36 @@ bool DatabaseInterface::insertKey(std::string keyName, std::string key) {
     bool actionLogged = this->addLog("New Key " + key.substr(36, 5) + " added to database.");
     std::cout << "Key added to database" << std::endl;
     return (documentInserted && actionLogged);
+}
+
+/* Public: Responsible for getting keys from the database. */
+std::string DatabaseInterface::findKey(std::string keyName) {
+
+    //query filter for the key
+    bsoncxx::v_noabi::document::view_or_value searchTerm = make_document(
+            kvp("keyName", keyName)
+    );
+
+    //Querying the database
+    core::v1::optional<bsoncxx::document::value> result =
+            searchForSingleDocument(KEY_COLLECTION_NAME,
+                                    searchTerm);
+
+    if(result->begin() == result->end()){
+        std::cout << "No key with that name could be found. "
+                  << "Use --seeKeys to see all keys or "
+                  << "use --seeLogs to see if any changes have taken place. "
+                  << std::endl;
+
+        exit(0);
+    }
+
+    //selecting the key name value
+    bsoncxx::document::view resultDocument = result->view();
+    bsoncxx::document::element keyKvp = resultDocument["key"];
+    std::string keyResult = keyKvp.get_value().get_string().value.to_string();
+
+    return keyResult;
 }
 
 /* Private: responsible for getting the name via key. Extracted from insertKey() */
@@ -188,12 +218,12 @@ bool DatabaseInterface::addLog(std::string logNote) {
     );
 
     return this->insertDocument(this->LOG_COLLECTION_NAME,
-                   newlog);
+                                newlog);
 }
 
 /* Private: Responsible for getting a single document using the given criteria */
 core::optional<bsoncxx::document::value> DatabaseInterface::searchForSingleDocument
-(std::string collectionName, bsoncxx::v_noabi::document::view_or_value searchCriteria){
+        (std::string collectionName, bsoncxx::v_noabi::document::view_or_value searchCriteria){
 
     //Declaration of the target collection (table) to query
     auto collection = this->database[collectionName];
@@ -207,14 +237,14 @@ core::optional<bsoncxx::document::value> DatabaseInterface::searchForSingleDocum
 bool DatabaseInterface::insertDocument(std::string collectionName,
                                        bsoncxx::v_noabi::document::view_or_value collectionEntry) {
 
-        //Declaration of the target collection (table) to add to
-        auto collection = this->database[collectionName];
+    //Declaration of the target collection (table) to add to
+    auto collection = this->database[collectionName];
 
-        //The actual insertion into the collection
-        core::optional<mongocxx::result::insert_one>
-                insertOneDocument = collection.insert_one(collectionEntry);
+    //The actual insertion into the collection
+    core::optional<mongocxx::result::insert_one>
+            insertOneDocument = collection.insert_one(collectionEntry);
 
-        return insertOneDocument.operator bool();
+    return insertOneDocument.operator bool();
 }
 
 /* Private: Responsible for getting a single document using the given criteria */
@@ -276,7 +306,6 @@ bool DatabaseInterface::collectionExists(std::string collectionToFind) {
 int DatabaseInterface::deleteDocument() {
     return 0;
 }
-
 
 
 

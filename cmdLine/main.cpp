@@ -73,14 +73,14 @@ void checkPassword(std::string password) {
 void printGuidance(){
 
     std::cout <<"--help provides a how-to-use" << std::endl
-            <<"--chpass <password> Changes your password" << std::endl
-            <<"--seeKeys <password> Displays all keys" << std::endl
-            <<"--seeLogs <password> Displays all logs" << std::endl
-            <<"--rmKey <password> <key name> Removes the specified key" << std::endl
-            <<"--addKey <password> <key name> <path to file> Adds the key you provide" << std::endl
-            <<"--updKey <password> <key name> <path to file> Replaces the existing key you have stored" << std::endl
-            <<"<password> <key name> Places the key you request in the current directory." << std::endl
-            <<"<password> <key name> <path to directory> Places the key in a specified directory." << std::endl;
+              <<"--chpass <password> Changes your password" << std::endl
+              <<"--seeKeys <password> Displays all keys" << std::endl
+              <<"--seeLogs <password> Displays all logs" << std::endl
+              <<"--rmKey <password> <key name> Removes the specified key" << std::endl
+              <<"--addKey <password> <key name> <path to file> Adds the key you provide" << std::endl
+              <<"--updKey <password> <key name> <path to file> Replaces the existing key you have stored" << std::endl
+              <<"<password> <key name> Places the key you request in the current directory." << std::endl
+              <<"<password> <key name> <path to directory> Places the key in a specified directory." << std::endl;
 }
 
 //A password changing wizard.
@@ -108,6 +108,9 @@ void showLogs(std::string password){
 void exportKey(std::string password, std::string keyName, std::string path){
     checkPassword(password);
 
+    std::string fileContents = databaseConnection->
+
+            fileManager->saveFile()
 }
 
 //deletes a stored key
@@ -140,7 +143,7 @@ void determineServiceRequest(int argc, char** argv){
     // Only one argument given aside from program call
     if(argc < 2){
         std::cout << "This command cannot be run on its own. For more information, run again using the"
-        << "For more information run with the --help flag\n\n";
+                  << "For more information run with the --help flag\n\n";
 
     } else if(argc == 2 && std::string(argv[1])  == "--help"){
         // --help provides a how-to-use
@@ -182,7 +185,7 @@ void determineServiceRequest(int argc, char** argv){
     } else {
         //Invalid command
         std::cout << "KeyMan: That command could not be recognised. "
-                    << "To see how to use this program, run again with the \"--help\" flag. " << std::endl;
+                  << "To see how to use this program, run again with the \"--help\" flag. " << std::endl;
     }
 
 }
