@@ -111,7 +111,13 @@ void exportKey(std::string password, std::string keyName, std::string path){
 
     std::string fileContents = databaseConnection->findKey(keyName);
 
-    fileManager->saveFile(fileContents, path);
+    bool fileSaved = fileManager->saveFile(fileContents, path);
+
+    if(fileSaved){
+        databaseConnection->addLog("Key \"" + keyName + "\" was exported to a file.");
+    } else {
+        databaseConnection->addLog("Failed attempt to export key\"" + keyName + "\" to a file.");
+    }
 }
 
 //Gives user the key in the current directory
