@@ -69,7 +69,7 @@ void checkPassword(std::string password) {
 
 }
 
-//Boilerplate guidance on how touse program
+//Boilerplate guidance on how to use program
 void printGuidance(){
 
     std::cout <<"--help provides a how-to-use" << std::endl
@@ -122,7 +122,7 @@ void addNewKey(std::string password, std::string keyName, std::string path){
 
     //Fetch key file from system and log it
     std::string keyFromFile = fileManager->getFileAsString(path);
-    databaseConnection->addLog("New file (\"" + path + "\" read by client.");
+    databaseConnection->addLog("New file (\"" + path + "\") read by client.");
 
     //Insert that file into the database
     databaseConnection->insertKey(keyName, keyFromFile);
@@ -184,10 +184,6 @@ void determineServiceRequest(int argc, char** argv){
         std::cout << "KeyMan: That command could not be recognised. "
                     << "To see how to use this program, run again with the \"--help\" flag. " << std::endl;
     }
-
-
-
-
 
 }
 
