@@ -54,7 +54,10 @@ private:
                         bsoncxx::v_noabi::document::view_or_value searchCriteria,
                         bsoncxx::v_noabi::document::view_or_value updatedKvp);
     bool documentExists(std::string key, std::string value, std::string collection);
+    bool collectionExists(std::string collectionToFind);
     int deleteDocument();
+
+    std::string getExistingKeyName(std::string &key);
 };
 
 #endif //CMDLINE_DATABASEINTERFACE_H

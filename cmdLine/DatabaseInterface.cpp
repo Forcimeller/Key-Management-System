@@ -77,42 +77,29 @@ bool DatabaseInterface::insertUser(std::string password) {
 /* Public: Responsible for adding keys to the database */
 bool DatabaseInterface::insertKey(std::string keyName, std::string key) {
 
-    //Decline to accept key if the key name already exists.
-    if(documentExists("keyName", keyName, KEY_COLLECTION_NAME)){
-        std::cout << "You already have a key with that name. All key names need to be unique." << std::endl;
-        this->addLog("User attempted to add a key using an existing key name");
-        return false;
+    //Collection existence check to prevent errors.
+    //Accept keys if the "keys" collection doesn't exist
+    if (this->collectionExists(KEY_COLLECTION_NAME)) {
+        //Decline to accept key if the key name already exists.
+        if (documentExists("keyName", keyName, KEY_COLLECTION_NAME)) {
+            std::cout << "You already have a key with that name. All key names need to be unique." << std::endl;
+            this->addLog("User attempted to add a key using an existing key name");
+            return false;
 
-    //Decline if Key already exists, give user the name of the key
+        //Decline if Key already exists, give user the name of the key
+        } else if (documentExists("key", key, KEY_COLLECTION_NAME)) {
 
-    } else if(documentExists("key", key, KEY_COLLECTION_NAME)) {
+            std::string keyNameResult = getExistingKeyName(key);
 
-        //query filter for the key
-        bsoncxx::v_noabi::document::view_or_value searchTerm = make_document(
-                kvp("key", key)
-        );
+            //Message to user
+            std::cout << "You have already added this key. It has been saved as \""
+                         << keyNameResult << "\"." << std::endl;
 
-        //Querying the database
-        core::optional<bsoncxx::document::value> result =
-                this->searchForSingleDocument(KEY_COLLECTION_NAME,
-                                              searchTerm);
+            this->addLog("User attempted to add an existing key.");
 
-        //selecting the key name value
-        bsoncxx::document::view resultDocument = result->view();
-        bsoncxx::document::element keyNameKvp = resultDocument["keyName"];
-        std::string keyNameResult = keyNameKvp.get_value().get_string().value.to_string();
-
-        //message to user (tells the user the key name)
-        std::cout << "You have already added this key. You saved it as \""
-        << keyNameResult << "\"." << std::endl;
-
-        this->addLog("User attempted to add an existing key.");
-
-        return false;
+            return false;
+        }
     }
-
-
-
 
     //making the document which will be added to the database
     bsoncxx::v_noabi::document::view_or_value collectionEntry = make_document(
@@ -126,6 +113,24 @@ bool DatabaseInterface::insertKey(std::string keyName, std::string key) {
     bool actionLogged = this->addLog("New Key " + key.substr(36, 5) + " added to database.");
 
     return (documentInserted && actionLogged);
+}
+
+/* Private: responsible for getting the name via key. Extracted from insertKey() */
+std::string DatabaseInterface::getExistingKeyName(std::string &key) {
+    //query filter for the key
+    bsoncxx::v_noabi::document::view_or_value searchTerm = make_document(
+            kvp("key", key)
+    );
+
+    //Querying the database
+    core::v1::optional<bsoncxx::document::value> result =
+            searchForSingleDocument(KEY_COLLECTION_NAME,
+                                    searchTerm);
+    //selecting the key name value
+    bsoncxx::document::view resultDocument = result->view();
+    bsoncxx::document::element keyNameKvp = resultDocument["keyName"];
+    std::string keyNameResult = keyNameKvp.get_value().get_string().value.to_string();
+    return keyNameResult;
 }
 
 /* Public: Responsible for updating the user's password */
@@ -250,9 +255,28 @@ bool DatabaseInterface::documentExists(std::string key,
     }
 }
 
+/* Private: Responsible for checking if a collection has been made */
+bool DatabaseInterface::collectionExists(std::string collectionToFind) {
+
+    //fetch all of the collections
+    auto collections = database.list_collection_names();
+
+    //loop through them in search for the specified collection
+    for(auto&& name : collections){
+        //End Loop if found
+        if(collectionToFind == name){
+            return true;
+        }
+    }
+
+    return false;
+}
+
 int DatabaseInterface::deleteDocument() {
     return 0;
 }
+
+
 
 
 
