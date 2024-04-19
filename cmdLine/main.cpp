@@ -173,11 +173,11 @@ void determineServiceRequest(int argc, char** argv){
 
     } else if(argc == 4 && std::string(argv[1]) == "--rmKey"){
         //--rmKey <password> <key name> removes the specified key
-        removeKey(argv[3], argv[4]);
+        removeKey(argv[2], argv[3]);
 
     } else if(argc == 4){
         //<password> <key name> <path to directory> places the key in a specified directory.
-        exportKey(argv[2], argv[3], argv[4]);
+        exportKey(argv[1], argv[2], argv[3]);
 
     } else if(argc == 5 && std::string(argv[1]) == "--addKey"){
         //--addKey <password> <key name> <path to file> adds the specified key

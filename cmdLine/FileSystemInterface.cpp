@@ -28,17 +28,15 @@ std::string FileSystemInterface::getCurrentDirectory(){
 bool FileSystemInterface::saveFile(std::string fileContents, std::string directory) {
 
     try {
-        std::ofstream newFile(keyFileName);
-
+        std::ofstream newFile(directory + "/" + keyFileName);
         newFile << fileContents << std::endl;
-
         newFile.close();
 
         return true;
 
     } catch(const std::exception& error) {
 
-        std::cout << "file could not be created" << std::endl;
+        std::cout << "File could not be created" << std::endl;
 
     }
     return false;
