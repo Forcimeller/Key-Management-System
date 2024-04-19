@@ -94,13 +94,11 @@ bool DatabaseInterface::insertKey(std::string keyName, std::string key) {
             //Message to user
             std::cout << "You have already added this key. It has been saved as \""
                          << keyNameResult << "\"." << std::endl;
-
             this->addLog("User attempted to add an existing key.");
 
             return false;
         }
     }
-
     //making the document which will be added to the database
     bsoncxx::v_noabi::document::view_or_value collectionEntry = make_document(
             kvp("keyName", keyName),
@@ -111,7 +109,7 @@ bool DatabaseInterface::insertKey(std::string keyName, std::string key) {
                                                  collectionEntry);
 
     bool actionLogged = this->addLog("New Key " + key.substr(36, 5) + " added to database.");
-
+    std::cout << "Key added to database" << std::endl;
     return (documentInserted && actionLogged);
 }
 
@@ -238,16 +236,19 @@ bool DatabaseInterface::updateDocument
     return result.operator bool();
 }
 
+/* Private: Responsible for determining whether the number of results returned is zero*/
 bool DatabaseInterface::documentExists(std::string key,
                                        std::string value,
                                        std::string collection){
-
+    //Create search term from given arguments
     bsoncxx::v_noabi::document::view_or_value searchTerm =
             make_document(kvp(key, value));
 
+    //Execute query
     core::optional<bsoncxx::document::value> result =
             this->searchForSingleDocument(collection, searchTerm);
 
+    //If the starting point is the same as the end point, then there are no results.
     if (result->begin() == result->end()){
         return false;
     } else {
@@ -258,7 +259,7 @@ bool DatabaseInterface::documentExists(std::string key,
 /* Private: Responsible for checking if a collection has been made */
 bool DatabaseInterface::collectionExists(std::string collectionToFind) {
 
-    //fetch all of the collections
+    //fetch all collections
     auto collections = database.list_collection_names();
 
     //loop through them in search for the specified collection
