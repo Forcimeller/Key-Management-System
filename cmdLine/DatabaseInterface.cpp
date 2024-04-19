@@ -113,6 +113,36 @@ bool DatabaseInterface::insertKey(std::string keyName, std::string key) {
     return (documentInserted && actionLogged);
 }
 
+/* Public: Responsible for getting keys from the database. */
+std::string DatabaseInterface::findKey(std::string keyName) {
+
+    //query filter for the key
+    bsoncxx::v_noabi::document::view_or_value searchTerm = make_document(
+            kvp("keyName", keyName)
+    );
+
+    //Querying the database
+    core::v1::optional<bsoncxx::document::value> result =
+            searchForSingleDocument(KEY_COLLECTION_NAME,
+                                    searchTerm);
+
+    if(result->begin() == result->end()){
+        std::cout << "No key with that name could be found. "
+                     << "Use --seeKeys to see all keys or "
+                     << "use --seeLogs to see if any changes have taken place. "
+                     << std::endl;
+
+        exit(0);
+    }
+
+    //selecting the key name value
+    bsoncxx::document::view resultDocument = result->view();
+    bsoncxx::document::element keyKvp = resultDocument["key"];
+    std::string keyResult = keyKvp.get_value().get_string().value.to_string();
+
+    return keyResult;
+}
+
 /* Private: responsible for getting the name via key. Extracted from insertKey() */
 std::string DatabaseInterface::getExistingKeyName(std::string &key) {
     //query filter for the key
@@ -276,7 +306,6 @@ bool DatabaseInterface::collectionExists(std::string collectionToFind) {
 int DatabaseInterface::deleteDocument() {
     return 0;
 }
-
 
 
 

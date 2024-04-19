@@ -108,6 +108,9 @@ void showLogs(std::string password){
 void exportKey(std::string password, std::string keyName, std::string path){
     checkPassword(password);
 
+    std::string fileContents = databaseConnection->
+
+    fileManager->saveFile()
 }
 
 //deletes a stored key
