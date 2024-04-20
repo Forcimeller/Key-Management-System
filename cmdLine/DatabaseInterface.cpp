@@ -144,13 +144,14 @@ std::string DatabaseInterface::findKey(std::string keyName) {
 }
 
 std::vector<DatabaseInterface::LogEntry> DatabaseInterface::getAllLogs(){
+
     mongocxx::cursor logQuery = searchForMultipleDocuments(LOG_COLLECTION_NAME,
-                                                           make_document());
+                                                           {});
     std::vector<DatabaseInterface::LogEntry> logVector;
     for(auto entry : logQuery){
         logVector.push_back({
-            entry["datetime"].get_value().get_string().value.to_string(),
-            entry["description"].get_value().get_string().value.to_string();
+            dateTimeToString(entry["datetime"]),
+            entry["description"].get_value().get_string().value.to_string()
         });
     }
 
@@ -176,6 +177,26 @@ std::string DatabaseInterface::getExistingKeyName(std::string &key) {
     bsoncxx::document::element keyNameKvp = resultDocument["keyName"];
     std::string keyNameResult = keyNameKvp.get_value().get_string().value.to_string();
     return keyNameResult;
+}
+
+std::string DatabaseInterface::dateTimeToString(bsoncxx::document::element datetimeElement){
+
+    //Casting the datetime as a milliseconds offset
+    std::chrono::milliseconds milliseconds(datetimeElement.get_date().to_int64());
+
+    //casting that offset into a time point
+    std::chrono::system_clock::time_point timePoint
+    (std::chrono::duration_cast<std::chrono::system_clock::duration>(milliseconds));
+
+    std::time_t time = std::chrono::system_clock::to_time_t(timePoint);
+
+    std::tm localTime = *std::localtime(&time);
+
+    std::ostringstream dateTimeStream;
+
+    dateTimeStream << std::put_time(&localTime, "%d/%m/%Y %H:%M:%S");
+
+    return dateTimeStream.str();
 }
 
 /* Public: Responsible for updating the user's password */
@@ -254,12 +275,14 @@ core::optional<bsoncxx::document::value> DatabaseInterface::searchForSingleDocum
 mongocxx::cursor DatabaseInterface::searchForMultipleDocuments
     (std::string collectionName, bsoncxx::v_noabi::document::view_or_value searchCriteria) {
 
+
     //Declaration of the target collection (table) to query
     auto collection = this->database[collectionName];
 
     mongocxx::cursor results = collection.find(searchCriteria);
 
     return results;
+
 }
 
 /* Private: Responsible for getting a single document using the given criteria */

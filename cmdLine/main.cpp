@@ -104,7 +104,7 @@ void showLogs(std::string password){
     std::vector<DatabaseInterface::LogEntry> logVector = databaseConnection->getAllLogs();
 
     for(DatabaseInterface::LogEntry entry : logVector) {
-        std::cout << entry.logDate << "\t\t" << entry.logContent << std::endl;
+        std::cout << entry.logDate << "\t" << entry.logContent << std::endl;
     }
 }
 

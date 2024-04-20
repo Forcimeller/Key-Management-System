@@ -6,9 +6,12 @@
 #define CMDLINE_DATABASEINTERFACE_H
 
 #include <iostream>
+#include <iomanip>
 #include <cstdint>
 #include <csignal>
 #include <cassert>
+#include <chrono>
+#include <ctime>
 #include <vector>
 #include <bsoncxx/builder/basic/document.hpp>
 #include <bsoncxx/json.hpp>
@@ -75,6 +78,7 @@ private:
     int deleteDocument();
 
     std::string getExistingKeyName(std::string &key);
+    std::string dateTimeToString(bsoncxx::document::element datetimeElement);
 };
 
 #endif //CMDLINE_DATABASEINTERFACE_H
