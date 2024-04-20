@@ -101,6 +101,11 @@ void showKeys(std::string password){
 void showLogs(std::string password){
     checkPassword(password);
 
+    std::vector<DatabaseInterface::LogEntry> logVector = databaseConnection->getAllLogs();
+
+    for(DatabaseInterface::LogEntry entry : logVector) {
+        std::cout << entry.logDate << "\t\t" << entry.logContent << std::endl;
+    }
 }
 
 //Gives the user the key in the specified directory
