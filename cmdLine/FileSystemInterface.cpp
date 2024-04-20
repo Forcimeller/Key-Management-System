@@ -35,9 +35,7 @@ bool FileSystemInterface::saveFile(std::string fileContents, std::string directo
         return true;
 
     } catch(const std::exception& error) {
-
         std::cout << "File could not be created" << std::endl;
-
     }
     return false;
 }
@@ -46,7 +44,7 @@ bool FileSystemInterface::saveFile(std::string fileContents, std::string directo
 bool FileSystemInterface::deleteFile() {
 
     try {
-        if(std::filesystem::remove(keyFileName)){
+        if(std::filesystem::remove(keyFileName)){  //File removal here
             return true;
         } else {
             return false;

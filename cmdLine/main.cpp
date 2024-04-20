@@ -92,20 +92,17 @@ void changePassword(std::string password){
     databaseConnection->changeUserPassword(newPassword);
 }
 
-//Shows all of the stored keys in the database
+//Shows all stored keys in the database
 void showKeys(std::string password){
     checkPassword(password);
-
 }
 
-//shows all of the logs in the database
+//shows all logs in the database
 void showLogs(std::string password){
     checkPassword(password);
-
 }
 
-
-//Gives the user the key
+//Gives the user the key in the specified directory
 void exportKey(std::string password, std::string keyName, std::string path){
     checkPassword(password);
 
@@ -128,7 +125,6 @@ void exportKey(std::string password, std::string keyName){
 //deletes a stored key
 void removeKey(std::string password, std::string keyName){
     checkPassword(password);
-
 }
 
 //Adds a new key to the database
