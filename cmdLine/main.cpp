@@ -100,6 +100,7 @@ void showKeys(std::string password){
 //shows all logs in the database
 void showLogs(std::string password){
     checkPassword(password);
+
 }
 
 //Gives the user the key in the specified directory

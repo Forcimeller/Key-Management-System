@@ -143,6 +143,23 @@ std::string DatabaseInterface::findKey(std::string keyName) {
     return keyResult;
 }
 
+std::vector<DatabaseInterface::LogEntry> DatabaseInterface::getAllLogs(){
+    mongocxx::cursor logQuery = searchForMultipleDocuments(LOG_COLLECTION_NAME,
+                                                           make_document());
+    std::vector<DatabaseInterface::LogEntry> logVector;
+    for(auto entry : logQuery){
+        logVector.push_back({
+            entry["datetime"].get_value().get_string().value.to_string(),
+            entry["description"].get_value().get_string().value.to_string();
+        });
+    }
+
+    return logVector;
+}
+
+std::vector<DatabaseInterface::KeyEntry> DatabaseInterface::getAllKeys(){
+}
+
 /* Private: responsible for getting the name via key. Extracted from insertKey() */
 std::string DatabaseInterface::getExistingKeyName(std::string &key) {
     //query filter for the key
@@ -233,7 +250,7 @@ core::optional<bsoncxx::document::value> DatabaseInterface::searchForSingleDocum
     return result;
 }
 
-/* Private: Responsible for fetching a subselection of documents */
+/* Private: Responsible for fetching a selection of documents */
 mongocxx::cursor DatabaseInterface::searchForMultipleDocuments
     (std::string collectionName, bsoncxx::v_noabi::document::view_or_value searchCriteria) {
 

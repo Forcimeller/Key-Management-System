@@ -23,6 +23,16 @@ using bsoncxx::builder::basic::make_document;
 class DatabaseInterface {
 public:
     //Public fields & Method Declarations
+    struct LogEntry {
+        std::string logDate;
+        std::string logContent;
+    };
+
+    struct KeyEntry {
+        std::string keyName;
+        std::string extendedKeySample;
+    };
+
     DatabaseInterface();
     ~DatabaseInterface();
     bool userRegistered();
@@ -30,6 +40,8 @@ public:
     bool insertKey(std::string keyName, std::string key);
     bool changeUserPassword(std::string password);
     bool addLog(std::string logNote);
+    std::vector<LogEntry> getAllLogs();
+    std::vector<KeyEntry> getAllKeys();
     std::string findUserPassword(std::string username);
     std::string findKey(std::string keyName);
 
