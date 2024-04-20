@@ -233,6 +233,18 @@ core::optional<bsoncxx::document::value> DatabaseInterface::searchForSingleDocum
     return result;
 }
 
+/* Private: Responsible for fetching a subselection of documents */
+mongocxx::cursor DatabaseInterface::searchForMultipleDocuments
+    (std::string collectionName, bsoncxx::v_noabi::document::view_or_value searchCriteria) {
+
+    //Declaration of the target collection (table) to query
+    auto collection = this->database[collectionName];
+
+    mongocxx::cursor results = collection.find(searchCriteria);
+
+    return results;
+}
+
 /* Private: Responsible for getting a single document using the given criteria */
 bool DatabaseInterface::insertDocument(std::string collectionName,
                                        bsoncxx::v_noabi::document::view_or_value collectionEntry) {
@@ -306,6 +318,8 @@ bool DatabaseInterface::collectionExists(std::string collectionToFind) {
 int DatabaseInterface::deleteDocument() {
     return 0;
 }
+
+
 
 
 

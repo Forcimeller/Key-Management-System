@@ -47,8 +47,12 @@ private:
     const std::string LOG_COLLECTION_NAME = "logs";
 
     void connectToServer();
-    core::optional<bsoncxx::document::value> searchForSingleDocument(std::string collectionName,
-                                                                     bsoncxx::v_noabi::document::view_or_value searchCriteria);
+    core::optional<bsoncxx::document::value>
+                searchForSingleDocument(std::string collectionName,
+                                        bsoncxx::v_noabi::document::view_or_value searchCriteria);
+
+    mongocxx::cursor searchForMultipleDocuments(std::string collectionName,
+                                                bsoncxx::v_noabi::document::view_or_value searchCriteria);
     bool insertDocument(std::string collectionName,
                         bsoncxx::v_noabi::document::view_or_value collectionEntry);
     bool updateDocument(std::string collectionName,
