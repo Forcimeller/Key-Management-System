@@ -15,8 +15,10 @@ public:
     //Public fields & Method Declarations
     FileSystemInterface();
     std::string getFileAsString(std::string path);
-    bool saveFile(std::string fileContents);
+    bool saveFile(std::string fileContents, std::string directory);
     bool deleteFile();
+
+    std::string getCurrentDirectory();
 
 private:
     //Private fields & Method Declarations

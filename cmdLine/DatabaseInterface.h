@@ -31,6 +31,7 @@ public:
     bool changeUserPassword(std::string password);
     bool addLog(std::string logNote);
     std::string findUserPassword(std::string username);
+    std::string findKey(std::string keyName);
 
 private:
     //Private fields & Method Declarations

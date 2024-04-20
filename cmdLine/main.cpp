@@ -73,14 +73,14 @@ void checkPassword(std::string password) {
 void printGuidance(){
 
     std::cout <<"--help provides a how-to-use" << std::endl
-            <<"--chpass <password> Changes your password" << std::endl
-            <<"--seeKeys <password> Displays all keys" << std::endl
-            <<"--seeLogs <password> Displays all logs" << std::endl
-            <<"--rmKey <password> <key name> Removes the specified key" << std::endl
-            <<"--addKey <password> <key name> <path to file> Adds the key you provide" << std::endl
-            <<"--updKey <password> <key name> <path to file> Replaces the existing key you have stored" << std::endl
-            <<"<password> <key name> Places the key you request in the current directory." << std::endl
-            <<"<password> <key name> <path to directory> Places the key in a specified directory." << std::endl;
+              <<"--chpass <password> Changes your password" << std::endl
+              <<"--seeKeys <password> Displays all keys" << std::endl
+              <<"--seeLogs <password> Displays all logs" << std::endl
+              <<"--rmKey <password> <key name> Removes the specified key" << std::endl
+              <<"--addKey <password> <key name> <path to file> Adds the key you provide" << std::endl
+              <<"--updKey <password> <key name> <path to file> Replaces the existing key you have stored" << std::endl
+              <<"<password> <key name> Places the key you request in the current directory." << std::endl
+              <<"<password> <key name> <path to directory> Places the key in a specified directory." << std::endl;
 }
 
 //A password changing wizard.
@@ -92,28 +92,39 @@ void changePassword(std::string password){
     databaseConnection->changeUserPassword(newPassword);
 }
 
-//Shows all of the stored keys in the database
+//Shows all stored keys in the database
 void showKeys(std::string password){
     checkPassword(password);
-
 }
 
-//shows all of the logs in the database
+//shows all logs in the database
 void showLogs(std::string password){
     checkPassword(password);
-
 }
 
-//Gives the user the key
+//Gives the user the key in the specified directory
 void exportKey(std::string password, std::string keyName, std::string path){
     checkPassword(password);
 
+    std::string fileContents = databaseConnection->findKey(keyName);
+
+    bool fileSaved = fileManager->saveFile(fileContents, path);
+
+    if(fileSaved){
+        databaseConnection->addLog("Key \"" + keyName + "\" was exported to a file.");
+    } else {
+        databaseConnection->addLog("Failed attempt to export key\"" + keyName + "\" to a file.");
+    }
+}
+
+//Gives user the key in the current directory
+void exportKey(std::string password, std::string keyName){
+    exportKey(password, keyName, fileManager->getCurrentDirectory());
 }
 
 //deletes a stored key
 void removeKey(std::string password, std::string keyName){
     checkPassword(password);
-
 }
 
 //Adds a new key to the database
@@ -140,7 +151,7 @@ void determineServiceRequest(int argc, char** argv){
     // Only one argument given aside from program call
     if(argc < 2){
         std::cout << "This command cannot be run on its own. For more information, run again using the"
-        << "For more information run with the --help flag\n\n";
+                  << "For more information run with the --help flag\n\n";
 
     } else if(argc == 2 && std::string(argv[1])  == "--help"){
         // --help provides a how-to-use
@@ -160,16 +171,15 @@ void determineServiceRequest(int argc, char** argv){
 
     } else if(argc == 3){
         //<password> <key name> places a key wherever the user is
-        std::string currentDirectory;
-        exportKey(argv[1], argv[2], currentDirectory);
+        exportKey(argv[1], argv[2]);
 
     } else if(argc == 4 && std::string(argv[1]) == "--rmKey"){
         //--rmKey <password> <key name> removes the specified key
-        removeKey(argv[3], argv[4]);
+        removeKey(argv[2], argv[3]);
 
     } else if(argc == 4){
         //<password> <key name> <path to directory> places the key in a specified directory.
-        exportKey(argv[2], argv[3], argv[4]);
+        exportKey(argv[1], argv[2], argv[3]);
 
     } else if(argc == 5 && std::string(argv[1]) == "--addKey"){
         //--addKey <password> <key name> <path to file> adds the specified key
@@ -182,7 +192,7 @@ void determineServiceRequest(int argc, char** argv){
     } else {
         //Invalid command
         std::cout << "KeyMan: That command could not be recognised. "
-                    << "To see how to use this program, run again with the \"--help\" flag. " << std::endl;
+                  << "To see how to use this program, run again with the \"--help\" flag. " << std::endl;
     }
 
 }

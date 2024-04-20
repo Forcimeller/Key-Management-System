@@ -19,22 +19,23 @@ std::string FileSystemInterface::getFileAsString(std::string path) {
     return fileContents;
 }
 
+/* Public: Returns the Current directory */
+std::string FileSystemInterface::getCurrentDirectory(){
+    return this->currentDirectory;
+}
+
 /* Public: Responsible for creating files in the current directory */
-bool FileSystemInterface::saveFile(std::string fileContents) {
+bool FileSystemInterface::saveFile(std::string fileContents, std::string directory) {
 
     try {
-        std::ofstream newFile(keyFileName);
-
+        std::ofstream newFile(directory + "/" + keyFileName);
         newFile << fileContents << std::endl;
-
         newFile.close();
 
         return true;
 
     } catch(const std::exception& error) {
-
-        std::cout << "file could not be created" << std::endl;
-
+        std::cout << "File could not be created" << std::endl;
     }
     return false;
 }
@@ -43,7 +44,7 @@ bool FileSystemInterface::saveFile(std::string fileContents) {
 bool FileSystemInterface::deleteFile() {
 
     try {
-        if(std::filesystem::remove(keyFileName)){
+        if(std::filesystem::remove(keyFileName)){  //File removal here
             return true;
         } else {
             return false;
