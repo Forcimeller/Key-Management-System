@@ -95,6 +95,13 @@ void changePassword(std::string password){
 //Shows all stored keys in the database
 void showKeys(std::string password){
     checkPassword(password);
+
+    std::vector<DatabaseInterface::KeyEntry> keyVector = databaseConnection->getAllKeys();
+
+    for(DatabaseInterface::KeyEntry entry : keyVector) {
+        std::cout << entry.extendedKeySample << "\t" << entry.keyName << std::endl;
+    }
+    databaseConnection->addLog("Keys viewed by user (ALL keys)");
 }
 
 //shows all logs in the database
