@@ -98,8 +98,12 @@ void showKeys(std::string password){
 
     std::vector<DatabaseInterface::KeyEntry> keyVector = databaseConnection->getAllKeys();
 
+    printf("%-15s%-4s%s\n", "Key Sample", "", "Key Name");
+
     for(DatabaseInterface::KeyEntry entry : keyVector) {
-        std::cout << entry.extendedKeySample << "\t" << entry.keyName << std::endl;
+        //std::cout << entry.extendedKeySample << "\t" << entry.keyName << std::endl;
+
+        printf("%-15s%-4s%s\n", entry.extendedKeySample.c_str(), "", entry.keyName.c_str());
     }
     databaseConnection->addLog("Keys viewed by user (ALL keys)");
 }

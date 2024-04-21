@@ -165,7 +165,7 @@ std::vector<DatabaseInterface::KeyEntry> DatabaseInterface::getAllKeys(){
     for(auto entry : keyQuery){
         keyVector.push_back({
             entry["keyName"].get_value().get_string().value.to_string(),
-            entry["key"].get_value().get_string().value.to_string().substr(36, 10),
+            entry["key"].get_value().get_string().value.to_string().substr(36, 15),
         });
     }
 
