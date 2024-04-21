@@ -106,6 +106,7 @@ void showLogs(std::string password){
     for(DatabaseInterface::LogEntry entry : logVector) {
         std::cout << entry.logDate << "\t" << entry.logContent << std::endl;
     }
+    databaseConnection->addLog("Logs viewed by user (ALL logs)");
 }
 
 //Gives the user the key in the specified directory
