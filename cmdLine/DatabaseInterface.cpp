@@ -159,6 +159,17 @@ std::vector<DatabaseInterface::LogEntry> DatabaseInterface::getAllLogs(){
 }
 
 std::vector<DatabaseInterface::KeyEntry> DatabaseInterface::getAllKeys(){
+    mongocxx::cursor keyQuery = searchForMultipleDocuments(KEY_COLLECTION_NAME,
+                                                           {});
+    std::vector<DatabaseInterface::KeyEntry> keyVector;
+    for(auto entry : keyQuery){
+        keyVector.push_back({
+            entry["keyName"].get_value().get_string().value.to_string(),
+            entry["key"].get_value().get_string().value.to_string().substr(36, 10),
+        });
+    }
+
+    return keyVector;
 }
 
 /* Private: responsible for getting the name via key. Extracted from insertKey() */
