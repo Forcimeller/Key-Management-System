@@ -134,6 +134,12 @@ void showLogs(std::string password){
     databaseConnection->addLog("Logs viewed by user (ALL logs)");
 }
 
+//Deletes the file after 15 minutes
+void selfDestuctKey(const std::string& path){
+    std::this_thread::sleep_for(std::chrono::minutes(15));
+    fileManager->deleteFile(path);
+}
+
 //Gives the user the key in the specified directory
 void exportKey(std::string password, std::string keyName, std::string path){
     checkPassword(password);
@@ -145,6 +151,17 @@ void exportKey(std::string password, std::string keyName, std::string path){
 
     if(fileSaved){
         databaseConnection->addLog("Key \"" + keyName + "\" was exported to a file.");
+        std::cout << "File created. Will sel-destruct in 15 mins." << std::endl;
+
+        //create the path
+        std::string fullDirectory = path + "/" + fileManager->getKeyFileName() + file.keyType;
+
+        //Create a thread
+        std::thread selfDestructThread(selfDestuctKey, fullDirectory);
+
+        //Thread will now run in the background
+        selfDestructThread.detach();
+
     } else {
         databaseConnection->addLog("Failed attempt to export key\"" + keyName + "\" to a file.");
     }
@@ -172,7 +189,7 @@ void addNewKey(std::string password, std::string keyName, std::string path){
     FileSystemInterface::KeyFile keyFromFile = fileManager->getFileAsString(path);
     databaseConnection->addLog("New file (\"" + path + "\") read by client.");
 
-    //Insert that file into the database - Mappings to a new Key struct
+    //Insert that file into the database -  Mappings to a new Key struct
     databaseConnection->insertKey(keyName, {keyFromFile.fileContents, keyFromFile.fileExtension});
 }
 

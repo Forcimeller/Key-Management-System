@@ -22,8 +22,9 @@ public:
     FileSystemInterface();
     KeyFile getFileAsString(std::string path);
     bool saveFile(FileSystemInterface::KeyFile file, std::string directory);
-    bool deleteFile();
+    bool deleteFile(std::string filePath);
     std::string getCurrentDirectory();
+    std::string getKeyFileName();
 
 private:
     //Private fields & Method Declarations
