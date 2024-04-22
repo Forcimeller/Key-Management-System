@@ -113,6 +113,22 @@ bool DatabaseInterface::insertKey(std::string keyName, std::string key) {
     return (documentInserted && actionLogged);
 }
 
+bool DatabaseInterface::deleteKey(std::string keyName) {
+
+    //query filter for the key
+    bsoncxx::v_noabi::document::view_or_value searchTerm = make_document(
+            kvp("keyName", keyName)
+    );
+
+    //Delete key
+    bool documentDeleted = deleteSingleDocument(KEY_COLLECTION_NAME, searchTerm);
+
+    //Log it
+    bool actionLogged = this->addLog("Key \"" + keyName + "\" was deleted from the database.");
+
+    return documentDeleted && actionLogged;
+}
+
 /* Public: Responsible for getting keys from the database. */
 std::string DatabaseInterface::findKey(std::string keyName) {
 
@@ -143,6 +159,7 @@ std::string DatabaseInterface::findKey(std::string keyName) {
     return keyResult;
 }
 
+/* Public: responsible for fetching all logs from the database */
 std::vector<DatabaseInterface::LogEntry> DatabaseInterface::getAllLogs(){
 
     mongocxx::cursor logQuery = searchForMultipleDocuments(LOG_COLLECTION_NAME,
@@ -158,6 +175,7 @@ std::vector<DatabaseInterface::LogEntry> DatabaseInterface::getAllLogs(){
     return logVector;
 }
 
+/* Public: responsible for fetching all keys from the database */
 std::vector<DatabaseInterface::KeyEntry> DatabaseInterface::getAllKeys(){
     mongocxx::cursor keyQuery = searchForMultipleDocuments(KEY_COLLECTION_NAME,
                                                            {});
@@ -190,6 +208,7 @@ std::string DatabaseInterface::getExistingKeyName(std::string &key) {
     return keyNameResult;
 }
 
+/* Private: Blackbox responsible for parsing datetimes from the database  */
 std::string DatabaseInterface::dateTimeToString(bsoncxx::document::element datetimeElement){
 
     //Casting the datetime as a milliseconds offset
@@ -198,13 +217,11 @@ std::string DatabaseInterface::dateTimeToString(bsoncxx::document::element datet
     //casting that offset into a time point
     std::chrono::system_clock::time_point timePoint
     (std::chrono::duration_cast<std::chrono::system_clock::duration>(milliseconds));
-
     std::time_t time = std::chrono::system_clock::to_time_t(timePoint);
-
     std::tm localTime = *std::localtime(&time);
 
+    //Formatting the time using an object stream
     std::ostringstream dateTimeStream;
-
     dateTimeStream << std::put_time(&localTime, "%d/%m/%Y %H:%M:%S");
 
     return dateTimeStream.str();
@@ -378,7 +395,6 @@ bool DatabaseInterface::collectionExists(std::string collectionToFind) {
 
     return false;
 }
-
 
 
 

@@ -161,7 +161,9 @@ void exportKey(std::string password, std::string keyName){
 void removeKey(std::string password, std::string keyName){
     checkPassword(password);
 
+    databaseConnection->deleteKey(keyName);
 
+    std::cout << keyName << " Key deleted successfully." << std::endl;
 }
 
 //Adds a new key to the database
