@@ -179,8 +179,10 @@ void addNewKey(std::string password, std::string keyName, std::string path){
 void updateKey(std::string password, std::string keyName, std::string path){
     checkPassword(password);
 
+    //fetch key from file
     std::string key = fileManager->getFileAsString(path);
 
+    //put key in database
     databaseConnection->updateKey(keyName, key);
 }
 

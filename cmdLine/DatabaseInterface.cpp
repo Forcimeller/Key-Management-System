@@ -115,6 +115,7 @@ bool DatabaseInterface::insertKey(std::string keyName, std::string key) {
     return (documentInserted && actionLogged);
 }
 
+/* Public: Responsible for updating replacing the key stored under the provided key name */
 bool DatabaseInterface::updateKey(std::string keyName, std::string key) {
     //Collection existence check to prevent errors.
     //Accept keys if the "keys" collection doesn't exist
@@ -132,7 +133,7 @@ bool DatabaseInterface::updateKey(std::string keyName, std::string key) {
 
         return false;
 
-        //Accept key if the key name already exists.
+        //Accept key if the key name exists.
         } else if (documentExists("keyName", keyName, KEY_COLLECTION_NAME)) {
 
             //making the document which will be added to the database
@@ -146,20 +147,25 @@ bool DatabaseInterface::updateKey(std::string keyName, std::string key) {
                     kvp("key", key)
             );
 
+            //Execute update
             bool documentInserted = this->updateDocument(KEY_COLLECTION_NAME,
                                                          searchCriteria,
                                                          newKey);
 
+            //message to user
             std::cout << "Key " << keyName << " updated with new key "
                       << key.substr(36, 5) << "." << std::endl;
 
-            bool actionLogged = this->addLog("User attempted to add a key using an existing key name");
+            // Log event
+            bool actionLogged = this->addLog("User updated key \"" + keyName + "\" with new key "
+                    + key.substr(36, 5) + ".");
 
             return (documentInserted && actionLogged);
         }
     }
-
+    // Reject key if key name does not exist
     std::cout << "The key " << keyName << " does not exist." << std::endl;
+    this->addLog("User attempted to add a key using a key name which did not exist");
     return false;
 }
 
