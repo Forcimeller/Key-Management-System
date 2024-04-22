@@ -115,6 +115,55 @@ bool DatabaseInterface::insertKey(std::string keyName, std::string key) {
     return (documentInserted && actionLogged);
 }
 
+bool DatabaseInterface::updateKey(std::string keyName, std::string key) {
+    //Collection existence check to prevent errors.
+    //Accept keys if the "keys" collection doesn't exist
+    if (this->collectionExists(KEY_COLLECTION_NAME)) {
+
+        //Decline if Key already exists, give user the name of the key
+        if (documentExists("key", key, KEY_COLLECTION_NAME)) {
+
+        std::string keyNameResult = getExistingKeyName(key);
+
+        //Message to user
+        std::cout << "You have already added this key. It has been saved as \""
+                  << keyNameResult << "\"." << std::endl;
+        this->addLog("User attempted to Update a key with another existing key.");
+
+        return false;
+
+        //Accept key if the key name already exists.
+        } else if (documentExists("keyName", keyName, KEY_COLLECTION_NAME)) {
+
+            //making the document which will be added to the database
+            bsoncxx::v_noabi::document::view_or_value searchCriteria = make_document(
+                    kvp("keyName", keyName)
+            );
+
+            //making the document which will be added to the database
+            bsoncxx::v_noabi::document::view_or_value newKey = make_document(
+                    kvp("keySample", key.substr(36, 5)),  // a sample of the key after the header
+                    kvp("key", key)
+            );
+
+            bool documentInserted = this->updateDocument(KEY_COLLECTION_NAME,
+                                                         searchCriteria,
+                                                         newKey);
+
+            std::cout << "Key " << keyName << " updated with new key "
+                      << key.substr(36, 5) << "." << std::endl;
+
+            bool actionLogged = this->addLog("User attempted to add a key using an existing key name");
+
+            return (documentInserted && actionLogged);
+        }
+    }
+
+    std::cout << "The key " << keyName << " does not exist." << std::endl;
+    return false;
+}
+
+/* Public: Responsible for updating existing keys */
 bool DatabaseInterface::deleteKey(std::string keyName) {
 
     //query filter for the key

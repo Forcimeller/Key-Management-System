@@ -12,8 +12,6 @@ std::string fetchPassword(){
     std::string newPassword;
     std::string confirmPassword;
 
-    bool passwordsMatch = false;
-
     for (int passwordAttempts = 0; passwordAttempts < 3; ++passwordAttempts) {
         std::cout << "Please set a new password> ";
 
@@ -27,7 +25,6 @@ std::string fetchPassword(){
 
         //Breaks loop if password entry is confirmed
         if (newPassword == confirmPassword) {
-            passwordsMatch = true;
             //returns password here
             return newPassword;
 
@@ -182,6 +179,9 @@ void addNewKey(std::string password, std::string keyName, std::string path){
 void updateKey(std::string password, std::string keyName, std::string path){
     checkPassword(password);
 
+    std::string key = fileManager->getFileAsString(path);
+
+    databaseConnection->updateKey(keyName, key);
 }
 
 //Determines and diverts the program based upon the arguments given on program call
@@ -248,53 +248,7 @@ int main(int argc, char** argv) {
 
         determineServiceRequest(argc, argv);
 
-        /*
-        std::string file = fileManager->getFileAsString("/home/cst3990/.ssh/id_rsa.pub");
-
-        fileManager->saveFile(file);
-
-        //sleep(10);
-
-        fileManager->deleteFile();
-         */
     }
-
-    /*
-    mongocxx::instance instance{};
-    mongocxx::client client{mongocxx::uri{}};
-
-    auto database = client["KeyManDatabase"];
-    auto collection = database["test"];
-
-    auto find_one_filtered_result = collection.find_one(make_document(kvp("i", 0)));
-
-    if (find_one_filtered_result) {
-        std::cout << "Yes" << std::endl;
-    } else {
-        std::cout << "No." << std::endl;
-    }
-
-    auto doc_value = make_document(
-            kvp("name", "MongoDB"),
-            kvp("type", "database"),
-            kvp("count", 1)
-    );
-
-    //auto doc_view = doc_value.view();
-
-    collection.insert_one(
-            static_cast<bsoncxx::v_noabi::document::view_or_value>(doc_value)
-            );
-
-    find_one_filtered_result = collection.find_one(make_document(kvp("name", "MongoDB")));
-
-    if (find_one_filtered_result) {
-        std::cout << "Yes" << std::endl;
-    } else {
-        std::cout << "No." << std::endl;
-    }
-
-     */
     return 0;
 }
 

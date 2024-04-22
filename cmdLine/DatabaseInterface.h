@@ -43,6 +43,7 @@ public:
     bool insertKey(std::string keyName, std::string key);
     bool changeUserPassword(std::string password);
     bool addLog(std::string logNote);
+    bool updateKey(std::string keyName, std::string key);
     bool deleteKey(std::string keyName);
     std::vector<LogEntry> getAllLogs();
     std::vector<KeyEntry> getAllKeys();
