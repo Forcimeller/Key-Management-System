@@ -36,19 +36,25 @@ public:
         std::string extendedKeySample;
     };
 
+    //Needed for file type compatibility
+    struct Key{
+        std::string keyContents;
+        std::string keyType;
+    };
+
     DatabaseInterface();
     ~DatabaseInterface();
     bool userRegistered();
     bool insertUser(std::string password);
-    bool insertKey(std::string keyName, std::string key);
+    bool insertKey(std::string keyName, Key key);
     bool changeUserPassword(std::string password);
     bool addLog(std::string logNote);
-    bool updateKey(std::string keyName, std::string key);
+    bool updateKey(std::string keyName, Key key);
     bool deleteKey(std::string keyName);
     std::vector<LogEntry> getAllLogs();
     std::vector<KeyEntry> getAllKeys();
     std::string findUserPassword(std::string username);
-    std::string findKey(std::string keyName);
+    Key findKey(std::string keyName);
 
 private:
     //Private fields & Method Declarations

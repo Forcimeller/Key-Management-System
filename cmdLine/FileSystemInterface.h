@@ -13,18 +13,23 @@
 class FileSystemInterface {
 public:
     //Public fields & Method Declarations
-    FileSystemInterface();
-    std::string getFileAsString(std::string path);
-    bool saveFile(std::string fileContents, std::string directory);
-    bool deleteFile();
 
+    //Needed for file type compatibility
+    struct KeyFile {
+        std::string fileExtension;
+        std::string fileContents;
+    };
+    FileSystemInterface();
+    KeyFile getFileAsString(std::string path);
+    bool saveFile(FileSystemInterface::KeyFile file, std::string directory);
+    bool deleteFile();
     std::string getCurrentDirectory();
 
 private:
     //Private fields & Method Declarations
     std::filesystem::path currentDirectory;
     const std::string keyFileName = "keyfile";
-    std::string readFile(std::string path);
+    KeyFile readFile(std::string path);
 };
 
 
