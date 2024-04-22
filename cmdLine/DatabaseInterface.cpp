@@ -75,7 +75,7 @@ bool DatabaseInterface::insertUser(std::string password) {
 }
 
 /* Public: Responsible for adding keys to the database */
-bool DatabaseInterface::insertKey(std::string keyName, std::string key) {
+bool DatabaseInterface::insertKey(std::string keyName, DatabaseInterface::Key key) {
 
     //Collection existence check to prevent errors.
     //Accept keys if the "keys" collection doesn't exist
@@ -88,9 +88,9 @@ bool DatabaseInterface::insertKey(std::string keyName, std::string key) {
             return false;
 
         //Decline if Key already exists, give user the name of the key
-        } else if (documentExists("key", key, KEY_COLLECTION_NAME)) {
+        } else if (documentExists("key", key.keyContents, KEY_COLLECTION_NAME)) {
 
-            std::string keyNameResult = getExistingKeyName(key);
+            std::string keyNameResult = getExistingKeyName(key.keyContents);
 
             //Message to user
             std::cout << "You have already added this key. It has been saved as \""
@@ -100,31 +100,33 @@ bool DatabaseInterface::insertKey(std::string keyName, std::string key) {
             return false;
         }
     }
+
     //making the document which will be added to the database
     bsoncxx::v_noabi::document::view_or_value collectionEntry = make_document(
             kvp("keyName", keyName),
-            kvp("keySample", key.substr(36, 5)),  // a sample of the key after the header
-            kvp("key", key)
+            kvp("keySample",key.keyContents.substr(36, 5)),  // a sample of the key after the header
+            kvp("keyType", key.keyType),
+            kvp("key", key.keyContents)
     );
     bool documentInserted = this->insertDocument(this->KEY_COLLECTION_NAME,
                                                  collectionEntry);
 
-    bool actionLogged = this->addLog("New Key " + key.substr(36, 5) + " added to database.");
+    bool actionLogged = this->addLog("New Key " + key.keyContents.substr(36, 5) + " added to database.");
     std::cout << "Key added to database" << std::endl;
 
     return (documentInserted && actionLogged);
 }
 
 /* Public: Responsible for updating replacing the key stored under the provided key name */
-bool DatabaseInterface::updateKey(std::string keyName, std::string key) {
+bool DatabaseInterface::updateKey(std::string keyName, DatabaseInterface::Key key) {
     //Collection existence check to prevent errors.
     //Accept keys if the "keys" collection doesn't exist
     if (this->collectionExists(KEY_COLLECTION_NAME)) {
 
         //Decline if Key already exists, give user the name of the key
-        if (documentExists("key", key, KEY_COLLECTION_NAME)) {
+        if (documentExists("key", key.keyContents, KEY_COLLECTION_NAME)) {
 
-        std::string keyNameResult = getExistingKeyName(key);
+        std::string keyNameResult = getExistingKeyName(key.keyContents);
 
         //Message to user
         std::cout << "You have already added this key. It has been saved as \""
@@ -143,8 +145,11 @@ bool DatabaseInterface::updateKey(std::string keyName, std::string key) {
 
             //making the document which will be added to the database
             bsoncxx::v_noabi::document::view_or_value newKey = make_document(
-                    kvp("keySample", key.substr(36, 5)),  // a sample of the key after the header
-                    kvp("key", key)
+                    kvp("keySample", key.keyContents.substr(36, 5)),
+                    // ^a sample of the key after the header
+
+                    kvp("keyType", key.keyType),
+                    kvp("key", key.keyContents)
             );
 
             //Execute update
@@ -154,11 +159,11 @@ bool DatabaseInterface::updateKey(std::string keyName, std::string key) {
 
             //message to user
             std::cout << "Key " << keyName << " updated with new key "
-                      << key.substr(36, 5) << "." << std::endl;
+                      << key.keyContents.substr(36, 5) << "." << std::endl;
 
             // Log event
             bool actionLogged = this->addLog("User updated key \"" + keyName + "\" with new key "
-                    + key.substr(36, 5) + ".");
+                    + key.keyContents.substr(36, 5) + ".");
 
             return (documentInserted && actionLogged);
         }
@@ -187,7 +192,7 @@ bool DatabaseInterface::deleteKey(std::string keyName) {
 }
 
 /* Public: Responsible for getting keys from the database. */
-std::string DatabaseInterface::findKey(std::string keyName) {
+DatabaseInterface::Key DatabaseInterface::findKey(std::string keyName) {
 
     //query filter for the key
     bsoncxx::v_noabi::document::view_or_value searchTerm = make_document(
@@ -208,12 +213,14 @@ std::string DatabaseInterface::findKey(std::string keyName) {
         exit(0);
     }
 
-    //selecting the key name value
+    //selecting the key name and type values
     bsoncxx::document::view resultDocument = result->view();
     bsoncxx::document::element keyKvp = resultDocument["key"];
     std::string keyResult = keyKvp.get_value().get_string().value.to_string();
 
-    return keyResult;
+    bsoncxx::document::element typeKvp = resultDocument["keyType"];
+    std::string typeResult = typeKvp.get_value().get_string().value.to_string();
+    return {keyResult, typeResult};
 }
 
 /* Public: responsible for fetching all logs from the database */

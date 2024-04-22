@@ -12,11 +12,11 @@ FileSystemInterface::FileSystemInterface(){
 
 /* Public: Responsible for opening the calling the file reader
    and returning the file as a string */
-std::string FileSystemInterface::getFileAsString(std::string path) {
+FileSystemInterface::KeyFile FileSystemInterface::getFileAsString(std::string path) {
 
-    std::string fileContents = readFile(path);
+    KeyFile fileData = readFile(path);
 
-    return fileContents;
+    return fileData;
 }
 
 /* Public: Returns the Current directory */
@@ -25,11 +25,12 @@ std::string FileSystemInterface::getCurrentDirectory(){
 }
 
 /* Public: Responsible for creating files in the current directory */
-bool FileSystemInterface::saveFile(std::string fileContents, std::string directory) {
+bool FileSystemInterface::saveFile(FileSystemInterface::KeyFile file, std::string directory) {
 
     try {
-        std::ofstream newFile(directory + "/" + keyFileName);
-        newFile << fileContents << std::endl;
+        std::cout << file.fileContents << std::endl;
+        std::ofstream newFile(directory + "/" + keyFileName + file.fileExtension);
+        newFile << file.fileContents << std::endl;
         newFile.close();
 
         return true;
@@ -56,7 +57,7 @@ bool FileSystemInterface::deleteFile() {
 }
 
 /* Private: Responsible for reading files from the directory */
-std::string FileSystemInterface::readFile(std::string path) {
+FileSystemInterface::KeyFile FileSystemInterface::readFile(std::string path) {
     std::string file;
 
     //convert string path into path object
@@ -77,6 +78,7 @@ std::string FileSystemInterface::readFile(std::string path) {
         std::cout << "The specified file could not be found" << std::endl;
         exit(0);
     }
+    KeyFile fileData = {pathObject.extension().string(), file};
 
-    return file;
+    return fileData;
 }

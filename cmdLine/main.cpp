@@ -138,9 +138,9 @@ void showLogs(std::string password){
 void exportKey(std::string password, std::string keyName, std::string path){
     checkPassword(password);
 
-    std::string fileContents = databaseConnection->findKey(keyName);
+    DatabaseInterface::Key file = databaseConnection->findKey(keyName);
 
-    bool fileSaved = fileManager->saveFile(fileContents, path);
+    bool fileSaved = fileManager->saveFile({file.keyType, file.keyContents}, path);
 
     if(fileSaved){
         databaseConnection->addLog("Key \"" + keyName + "\" was exported to a file.");
@@ -168,11 +168,11 @@ void addNewKey(std::string password, std::string keyName, std::string path){
     checkPassword(password);
 
     //Fetch key file from system and log it
-    std::string keyFromFile = fileManager->getFileAsString(path);
+    FileSystemInterface::KeyFile keyFromFile = fileManager->getFileAsString(path);
     databaseConnection->addLog("New file (\"" + path + "\") read by client.");
 
     //Insert that file into the database
-    databaseConnection->insertKey(keyName, keyFromFile);
+    databaseConnection->insertKey(keyName, {keyFromFile.fileContents, keyFromFile.fileExtension});
 }
 
 //Replaces an existing key with the given key
@@ -180,10 +180,10 @@ void updateKey(std::string password, std::string keyName, std::string path){
     checkPassword(password);
 
     //fetch key from file
-    std::string key = fileManager->getFileAsString(path);
+    FileSystemInterface::KeyFile key = fileManager->getFileAsString(path);
 
     //put key in database
-    databaseConnection->updateKey(keyName, key);
+    databaseConnection->updateKey(keyName, {key.fileContents, key.fileExtension});
 }
 
 //Determines and diverts the program based upon the arguments given on program call
