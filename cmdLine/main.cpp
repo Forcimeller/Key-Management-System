@@ -96,15 +96,22 @@ void changePassword(std::string password){
 void showKeys(std::string password){
     checkPassword(password);
 
+    //Printf Format rule: String of 15 chars, followed by 4 Whitespaces,
+    // followed by a string of any length, followed by a line break.
+    std::string formatRule = "%-15s%-4s%s\n";
+
+    //fetch keys from database
     std::vector<DatabaseInterface::KeyEntry> keyVector = databaseConnection->getAllKeys();
 
-    printf("%-15s%-4s%s\n", "Key Sample", "", "Key Name");
+    //print the header
+    printf(formatRule.c_str(), "Key Sample", "", "Key Name");
 
+    //print the keys
     for(DatabaseInterface::KeyEntry entry : keyVector) {
-        //std::cout << entry.extendedKeySample << "\t" << entry.keyName << std::endl;
-
-        printf("%-15s%-4s%s\n", entry.extendedKeySample.c_str(), "", entry.keyName.c_str());
+           printf(formatRule.c_str(), entry.extendedKeySample.c_str(), "", entry.keyName.c_str());
     }
+
+    //log the event
     databaseConnection->addLog("Keys viewed by user (ALL keys)");
 }
 
@@ -112,11 +119,21 @@ void showKeys(std::string password){
 void showLogs(std::string password){
     checkPassword(password);
 
+    //Printf Format rule: String of 15 chars, followed by 4 Whitespaces,
+    // followed by a string of any length, followed by a line break.
+    std::string formatRule = "%-19s%-4s%s\n";
+
     std::vector<DatabaseInterface::LogEntry> logVector = databaseConnection->getAllLogs();
 
+    //print the header
+    printf(formatRule.c_str(), "Log Date/Time", "", "Log Description");
+
+    //Print the keys
     for(DatabaseInterface::LogEntry entry : logVector) {
-        std::cout << entry.logDate << "\t" << entry.logContent << std::endl;
+        printf(formatRule.c_str(), entry.logDate.c_str(), "", entry.logContent.c_str());
     }
+
+    //log the event
     databaseConnection->addLog("Logs viewed by user (ALL logs)");
 }
 
@@ -143,6 +160,8 @@ void exportKey(std::string password, std::string keyName){
 //deletes a stored key
 void removeKey(std::string password, std::string keyName){
     checkPassword(password);
+
+
 }
 
 //Adds a new key to the database

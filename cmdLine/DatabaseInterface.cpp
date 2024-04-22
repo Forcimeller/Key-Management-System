@@ -329,6 +329,19 @@ bool DatabaseInterface::updateDocument
     return result.operator bool();
 }
 
+/* Private: Responsible for removing documents form the database */
+bool DatabaseInterface::deleteSingleDocument(std::string collectionName,
+                                             bsoncxx::v_noabi::document::view_or_value searchCriteria){
+
+    //Declaration of the target collection (table) to query
+    auto collection = this->database[collectionName];
+
+    //Execute
+    core::optional<mongocxx::result::delete_result> result = collection.delete_one(searchCriteria);
+
+    return result.operator bool();
+}
+
 /* Private: Responsible for determining whether the number of results returned is zero*/
 bool DatabaseInterface::documentExists(std::string key,
                                        std::string value,
@@ -366,9 +379,6 @@ bool DatabaseInterface::collectionExists(std::string collectionToFind) {
     return false;
 }
 
-int DatabaseInterface::deleteDocument() {
-    return 0;
-}
 
 
 
