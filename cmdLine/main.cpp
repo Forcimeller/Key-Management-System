@@ -8,6 +8,7 @@
 DatabaseInterface* databaseConnection;
 FileSystemInterface* fileManager;
 
+//Helper method: password registration method for registerNewUser() and changePassword()
 std::string fetchPassword(){
     std::string newPassword;
     std::string confirmPassword;
@@ -37,6 +38,7 @@ std::string fetchPassword(){
     exit(0);
 }
 
+//Takes the user through the password creation wizard
 void registerNewUser() {
 
     std::cout << "Welcome to Key Manager\n" << std::endl;
@@ -48,6 +50,7 @@ void registerNewUser() {
 
 }
 
+//Verifies user password
 void checkPassword(std::string password) {
     //first we fetch the username so that we can query using it
     std::string username = getlogin();
@@ -136,7 +139,8 @@ void showLogs(std::string password){
 
 //Deletes the file after 15 minutes
 void selfDestuctKey(const std::string& path){
-    std::this_thread::sleep_for(std::chrono::minutes(15));
+    //pauses the self-destruction for 15 minutes
+    std::this_thread::sleep_for(std::chrono::minutes(2));
     fileManager->deleteFile(path);
 }
 
@@ -151,7 +155,7 @@ void exportKey(std::string password, std::string keyName, std::string path){
 
     if(fileSaved){
         databaseConnection->addLog("Key \"" + keyName + "\" was exported to a file.");
-        std::cout << "File created. Will sel-destruct in 15 mins." << std::endl;
+        std::cout << "File created. Will self-destruct in 15 mins." << std::endl;
 
         //create the path
         std::string fullDirectory = path + "/" + fileManager->getKeyFileName() + file.keyType;
@@ -265,16 +269,7 @@ int main(int argc, char** argv) {
         registerNewUser();
 
     } else {
-
         determineServiceRequest(argc, argv);
-
     }
     return 0;
 }
-
-
-
-
-
-
-

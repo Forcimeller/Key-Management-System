@@ -28,7 +28,6 @@ std::string FileSystemInterface::getCurrentDirectory(){
 bool FileSystemInterface::saveFile(FileSystemInterface::KeyFile file, std::string directory) {
 
     try {
-        std::cout << file.fileContents << std::endl;
         std::ofstream newFile(directory + "/" + keyFileName + file.fileExtension);
         newFile << file.fileContents << std::endl;
         newFile.close();
