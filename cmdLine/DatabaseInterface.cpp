@@ -80,13 +80,14 @@ bool DatabaseInterface::insertKey(std::string keyName, std::string key) {
     //Collection existence check to prevent errors.
     //Accept keys if the "keys" collection doesn't exist
     if (this->collectionExists(KEY_COLLECTION_NAME)) {
+
         //Decline to accept key if the key name already exists.
         if (documentExists("keyName", keyName, KEY_COLLECTION_NAME)) {
             std::cout << "You already have a key with that name. All key names need to be unique." << std::endl;
             this->addLog("User attempted to add a key using an existing key name");
             return false;
 
-            //Decline if Key already exists, give user the name of the key
+        //Decline if Key already exists, give user the name of the key
         } else if (documentExists("key", key, KEY_COLLECTION_NAME)) {
 
             std::string keyNameResult = getExistingKeyName(key);
@@ -110,6 +111,7 @@ bool DatabaseInterface::insertKey(std::string keyName, std::string key) {
 
     bool actionLogged = this->addLog("New Key " + key.substr(36, 5) + " added to database.");
     std::cout << "Key added to database" << std::endl;
+
     return (documentInserted && actionLogged);
 }
 
@@ -368,11 +370,11 @@ bool DatabaseInterface::documentExists(std::string key,
             make_document(kvp(key, value));
 
     //Execute query
-    core::optional<bsoncxx::document::value> result =
-            this->searchForSingleDocument(collection, searchTerm);
+    mongocxx::cursor result =
+            this->searchForMultipleDocuments(collection, searchTerm);
 
     //If the starting point is the same as the end point, then there are no results.
-    if (result->begin() == result->end()){
+    if (result.begin() == result.end()){
         return false;
     } else {
         return true;
