@@ -13,6 +13,8 @@
 class FileSystemInterface {
 public:
     //Public fields & Method Declarations
+
+    //Needed for file type compatibility
     struct KeyFile {
         std::string fileExtension;
         std::string fileContents;

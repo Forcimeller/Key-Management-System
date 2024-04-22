@@ -36,6 +36,7 @@ public:
         std::string extendedKeySample;
     };
 
+    //Needed for file type compatibility
     struct Key{
         std::string keyContents;
         std::string keyType;

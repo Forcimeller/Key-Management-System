@@ -220,6 +220,8 @@ DatabaseInterface::Key DatabaseInterface::findKey(std::string keyName) {
 
     bsoncxx::document::element typeKvp = resultDocument["keyType"];
     std::string typeResult = typeKvp.get_value().get_string().value.to_string();
+
+    //Mappings to a new Key struct
     return {keyResult, typeResult};
 }
 

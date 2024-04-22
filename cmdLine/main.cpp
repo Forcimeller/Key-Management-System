@@ -140,6 +140,7 @@ void exportKey(std::string password, std::string keyName, std::string path){
 
     DatabaseInterface::Key file = databaseConnection->findKey(keyName);
 
+    //Mappings to a new KeyFile struct
     bool fileSaved = fileManager->saveFile({file.keyType, file.keyContents}, path);
 
     if(fileSaved){
@@ -171,7 +172,7 @@ void addNewKey(std::string password, std::string keyName, std::string path){
     FileSystemInterface::KeyFile keyFromFile = fileManager->getFileAsString(path);
     databaseConnection->addLog("New file (\"" + path + "\") read by client.");
 
-    //Insert that file into the database
+    //Insert that file into the database - Mappings to a new Key struct
     databaseConnection->insertKey(keyName, {keyFromFile.fileContents, keyFromFile.fileExtension});
 }
 
