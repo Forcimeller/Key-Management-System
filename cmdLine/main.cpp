@@ -12,8 +12,6 @@ std::string fetchPassword(){
     std::string newPassword;
     std::string confirmPassword;
 
-    bool passwordsMatch = false;
-
     for (int passwordAttempts = 0; passwordAttempts < 3; ++passwordAttempts) {
         std::cout << "Please set a new password> ";
 
@@ -27,7 +25,6 @@ std::string fetchPassword(){
 
         //Breaks loop if password entry is confirmed
         if (newPassword == confirmPassword) {
-            passwordsMatch = true;
             //returns password here
             return newPassword;
 
@@ -95,11 +92,46 @@ void changePassword(std::string password){
 //Shows all stored keys in the database
 void showKeys(std::string password){
     checkPassword(password);
+
+    //Printf Format rule: String of 15 chars, followed by 4 Whitespaces,
+    // followed by a string of any length, followed by a line break.
+    std::string formatRule = "%-15s%-4s%s\n";
+
+    //fetch keys from database
+    std::vector<DatabaseInterface::KeyEntry> keyVector = databaseConnection->getAllKeys();
+
+    //print the header
+    printf(formatRule.c_str(), "Key Sample", "", "Key Name");
+
+    //print the keys
+    for(DatabaseInterface::KeyEntry entry : keyVector) {
+           printf(formatRule.c_str(), entry.extendedKeySample.c_str(), "", entry.keyName.c_str());
+    }
+
+    //log the event
+    databaseConnection->addLog("Keys viewed by user (ALL keys)");
 }
 
 //shows all logs in the database
 void showLogs(std::string password){
     checkPassword(password);
+
+    //Printf Format rule: String of 15 chars, followed by 4 Whitespaces,
+    // followed by a string of any length, followed by a line break.
+    std::string formatRule = "%-19s%-4s%s\n";
+
+    std::vector<DatabaseInterface::LogEntry> logVector = databaseConnection->getAllLogs();
+
+    //print the header
+    printf(formatRule.c_str(), "Log Date/Time", "", "Log Description");
+
+    //Print the keys
+    for(DatabaseInterface::LogEntry entry : logVector) {
+        printf(formatRule.c_str(), entry.logDate.c_str(), "", entry.logContent.c_str());
+    }
+
+    //log the event
+    databaseConnection->addLog("Logs viewed by user (ALL logs)");
 }
 
 //Gives the user the key in the specified directory
@@ -125,6 +157,10 @@ void exportKey(std::string password, std::string keyName){
 //deletes a stored key
 void removeKey(std::string password, std::string keyName){
     checkPassword(password);
+
+    databaseConnection->deleteKey(keyName);
+
+    std::cout << keyName << " Key deleted successfully." << std::endl;
 }
 
 //Adds a new key to the database
@@ -143,6 +179,11 @@ void addNewKey(std::string password, std::string keyName, std::string path){
 void updateKey(std::string password, std::string keyName, std::string path){
     checkPassword(password);
 
+    //fetch key from file
+    std::string key = fileManager->getFileAsString(path);
+
+    //put key in database
+    databaseConnection->updateKey(keyName, key);
 }
 
 //Determines and diverts the program based upon the arguments given on program call
@@ -209,53 +250,7 @@ int main(int argc, char** argv) {
 
         determineServiceRequest(argc, argv);
 
-        /*
-        std::string file = fileManager->getFileAsString("/home/cst3990/.ssh/id_rsa.pub");
-
-        fileManager->saveFile(file);
-
-        //sleep(10);
-
-        fileManager->deleteFile();
-         */
     }
-
-    /*
-    mongocxx::instance instance{};
-    mongocxx::client client{mongocxx::uri{}};
-
-    auto database = client["KeyManDatabase"];
-    auto collection = database["test"];
-
-    auto find_one_filtered_result = collection.find_one(make_document(kvp("i", 0)));
-
-    if (find_one_filtered_result) {
-        std::cout << "Yes" << std::endl;
-    } else {
-        std::cout << "No." << std::endl;
-    }
-
-    auto doc_value = make_document(
-            kvp("name", "MongoDB"),
-            kvp("type", "database"),
-            kvp("count", 1)
-    );
-
-    //auto doc_view = doc_value.view();
-
-    collection.insert_one(
-            static_cast<bsoncxx::v_noabi::document::view_or_value>(doc_value)
-            );
-
-    find_one_filtered_result = collection.find_one(make_document(kvp("name", "MongoDB")));
-
-    if (find_one_filtered_result) {
-        std::cout << "Yes" << std::endl;
-    } else {
-        std::cout << "No." << std::endl;
-    }
-
-     */
     return 0;
 }
 

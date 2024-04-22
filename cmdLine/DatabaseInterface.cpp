@@ -80,13 +80,14 @@ bool DatabaseInterface::insertKey(std::string keyName, std::string key) {
     //Collection existence check to prevent errors.
     //Accept keys if the "keys" collection doesn't exist
     if (this->collectionExists(KEY_COLLECTION_NAME)) {
+
         //Decline to accept key if the key name already exists.
         if (documentExists("keyName", keyName, KEY_COLLECTION_NAME)) {
             std::cout << "You already have a key with that name. All key names need to be unique." << std::endl;
             this->addLog("User attempted to add a key using an existing key name");
             return false;
 
-            //Decline if Key already exists, give user the name of the key
+        //Decline if Key already exists, give user the name of the key
         } else if (documentExists("key", key, KEY_COLLECTION_NAME)) {
 
             std::string keyNameResult = getExistingKeyName(key);
@@ -110,7 +111,79 @@ bool DatabaseInterface::insertKey(std::string keyName, std::string key) {
 
     bool actionLogged = this->addLog("New Key " + key.substr(36, 5) + " added to database.");
     std::cout << "Key added to database" << std::endl;
+
     return (documentInserted && actionLogged);
+}
+
+/* Public: Responsible for updating replacing the key stored under the provided key name */
+bool DatabaseInterface::updateKey(std::string keyName, std::string key) {
+    //Collection existence check to prevent errors.
+    //Accept keys if the "keys" collection doesn't exist
+    if (this->collectionExists(KEY_COLLECTION_NAME)) {
+
+        //Decline if Key already exists, give user the name of the key
+        if (documentExists("key", key, KEY_COLLECTION_NAME)) {
+
+        std::string keyNameResult = getExistingKeyName(key);
+
+        //Message to user
+        std::cout << "You have already added this key. It has been saved as \""
+                  << keyNameResult << "\"." << std::endl;
+        this->addLog("User attempted to Update a key with another existing key.");
+
+        return false;
+
+        //Accept key if the key name exists.
+        } else if (documentExists("keyName", keyName, KEY_COLLECTION_NAME)) {
+
+            //making the document which will be added to the database
+            bsoncxx::v_noabi::document::view_or_value searchCriteria = make_document(
+                    kvp("keyName", keyName)
+            );
+
+            //making the document which will be added to the database
+            bsoncxx::v_noabi::document::view_or_value newKey = make_document(
+                    kvp("keySample", key.substr(36, 5)),  // a sample of the key after the header
+                    kvp("key", key)
+            );
+
+            //Execute update
+            bool documentInserted = this->updateDocument(KEY_COLLECTION_NAME,
+                                                         searchCriteria,
+                                                         newKey);
+
+            //message to user
+            std::cout << "Key " << keyName << " updated with new key "
+                      << key.substr(36, 5) << "." << std::endl;
+
+            // Log event
+            bool actionLogged = this->addLog("User updated key \"" + keyName + "\" with new key "
+                    + key.substr(36, 5) + ".");
+
+            return (documentInserted && actionLogged);
+        }
+    }
+    // Reject key if key name does not exist
+    std::cout << "The key " << keyName << " does not exist." << std::endl;
+    this->addLog("User attempted to add a key using a key name which did not exist");
+    return false;
+}
+
+/* Public: Responsible for updating existing keys */
+bool DatabaseInterface::deleteKey(std::string keyName) {
+
+    //query filter for the key
+    bsoncxx::v_noabi::document::view_or_value searchTerm = make_document(
+            kvp("keyName", keyName)
+    );
+
+    //Delete key
+    bool documentDeleted = deleteSingleDocument(KEY_COLLECTION_NAME, searchTerm);
+
+    //Log it
+    bool actionLogged = this->addLog("Key \"" + keyName + "\" was deleted from the database.");
+
+    return documentDeleted && actionLogged;
 }
 
 /* Public: Responsible for getting keys from the database. */
@@ -143,6 +216,37 @@ std::string DatabaseInterface::findKey(std::string keyName) {
     return keyResult;
 }
 
+/* Public: responsible for fetching all logs from the database */
+std::vector<DatabaseInterface::LogEntry> DatabaseInterface::getAllLogs(){
+
+    mongocxx::cursor logQuery = searchForMultipleDocuments(LOG_COLLECTION_NAME,
+                                                           {});
+    std::vector<DatabaseInterface::LogEntry> logVector;
+    for(auto entry : logQuery){
+        logVector.push_back({
+            dateTimeToString(entry["datetime"]),
+            entry["description"].get_value().get_string().value.to_string()
+        });
+    }
+
+    return logVector;
+}
+
+/* Public: responsible for fetching all keys from the database */
+std::vector<DatabaseInterface::KeyEntry> DatabaseInterface::getAllKeys(){
+    mongocxx::cursor keyQuery = searchForMultipleDocuments(KEY_COLLECTION_NAME,
+                                                           {});
+    std::vector<DatabaseInterface::KeyEntry> keyVector;
+    for(auto entry : keyQuery){
+        keyVector.push_back({
+            entry["keyName"].get_value().get_string().value.to_string(),
+            entry["key"].get_value().get_string().value.to_string().substr(36, 15),
+        });
+    }
+
+    return keyVector;
+}
+
 /* Private: responsible for getting the name via key. Extracted from insertKey() */
 std::string DatabaseInterface::getExistingKeyName(std::string &key) {
     //query filter for the key
@@ -159,6 +263,25 @@ std::string DatabaseInterface::getExistingKeyName(std::string &key) {
     bsoncxx::document::element keyNameKvp = resultDocument["keyName"];
     std::string keyNameResult = keyNameKvp.get_value().get_string().value.to_string();
     return keyNameResult;
+}
+
+/* Private: Blackbox responsible for parsing datetimes from the database  */
+std::string DatabaseInterface::dateTimeToString(bsoncxx::document::element datetimeElement){
+
+    //Casting the datetime as a milliseconds offset
+    std::chrono::milliseconds milliseconds(datetimeElement.get_date().to_int64());
+
+    //casting that offset into a time point
+    std::chrono::system_clock::time_point timePoint
+    (std::chrono::duration_cast<std::chrono::system_clock::duration>(milliseconds));
+    std::time_t time = std::chrono::system_clock::to_time_t(timePoint);
+    std::tm localTime = *std::localtime(&time);
+
+    //Formatting the time using an object stream
+    std::ostringstream dateTimeStream;
+    dateTimeStream << std::put_time(&localTime, "%d/%m/%Y %H:%M:%S");
+
+    return dateTimeStream.str();
 }
 
 /* Public: Responsible for updating the user's password */
@@ -233,6 +356,20 @@ core::optional<bsoncxx::document::value> DatabaseInterface::searchForSingleDocum
     return result;
 }
 
+/* Private: Responsible for fetching a selection of documents */
+mongocxx::cursor DatabaseInterface::searchForMultipleDocuments
+    (std::string collectionName, bsoncxx::v_noabi::document::view_or_value searchCriteria) {
+
+
+    //Declaration of the target collection (table) to query
+    auto collection = this->database[collectionName];
+
+    mongocxx::cursor results = collection.find(searchCriteria);
+
+    return results;
+
+}
+
 /* Private: Responsible for getting a single document using the given criteria */
 bool DatabaseInterface::insertDocument(std::string collectionName,
                                        bsoncxx::v_noabi::document::view_or_value collectionEntry) {
@@ -266,6 +403,19 @@ bool DatabaseInterface::updateDocument
     return result.operator bool();
 }
 
+/* Private: Responsible for removing documents form the database */
+bool DatabaseInterface::deleteSingleDocument(std::string collectionName,
+                                             bsoncxx::v_noabi::document::view_or_value searchCriteria){
+
+    //Declaration of the target collection (table) to query
+    auto collection = this->database[collectionName];
+
+    //Execute
+    core::optional<mongocxx::result::delete_result> result = collection.delete_one(searchCriteria);
+
+    return result.operator bool();
+}
+
 /* Private: Responsible for determining whether the number of results returned is zero*/
 bool DatabaseInterface::documentExists(std::string key,
                                        std::string value,
@@ -275,11 +425,11 @@ bool DatabaseInterface::documentExists(std::string key,
             make_document(kvp(key, value));
 
     //Execute query
-    core::optional<bsoncxx::document::value> result =
-            this->searchForSingleDocument(collection, searchTerm);
+    mongocxx::cursor result =
+            this->searchForMultipleDocuments(collection, searchTerm);
 
     //If the starting point is the same as the end point, then there are no results.
-    if (result->begin() == result->end()){
+    if (result.begin() == result.end()){
         return false;
     } else {
         return true;
@@ -303,9 +453,7 @@ bool DatabaseInterface::collectionExists(std::string collectionToFind) {
     return false;
 }
 
-int DatabaseInterface::deleteDocument() {
-    return 0;
-}
+
 
 
 
