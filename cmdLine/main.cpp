@@ -138,10 +138,10 @@ void showLogs(std::string password){
 }
 
 //Deletes the file after 15 minutes
-void selfDestuctKey(const std::string& path){
+void selfDestuctKey(const std::string& path, FileSystemInterface* fileSysMngr){
     //pauses the self-destruction for 15 minutes
-    std::this_thread::sleep_for(std::chrono::minutes(2));
-    fileManager->deleteFile(path);
+    std::this_thread::sleep_for(std::chrono::minutes(15));
+    fileSysMngr->deleteFile(path);
 }
 
 //Gives the user the key in the specified directory
@@ -161,10 +161,12 @@ void exportKey(std::string password, std::string keyName, std::string path){
         std::string fullDirectory = path + "/" + fileManager->getKeyFileName() + file.keyType;
 
         //Create a thread
-        std::thread selfDestructThread(selfDestuctKey, fullDirectory);
+        std::thread selfDestructThread(selfDestuctKey, fullDirectory, fileManager);
 
-        //Thread will now run in the background
-        selfDestructThread.detach();
+        if(selfDestructThread.joinable()) {
+            //Thread will now run in the background
+            selfDestructThread.detach();
+        }
 
     } else {
         databaseConnection->addLog("Failed attempt to export key\"" + keyName + "\" to a file.");

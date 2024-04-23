@@ -44,7 +44,7 @@ bool FileSystemInterface::saveFile(FileSystemInterface::KeyFile file, std::strin
 bool FileSystemInterface::deleteFile(std::string filePath) {
 
     try {
-        if(std::filesystem::remove(keyFileName)){  //File removal here
+        if(std::filesystem::remove(filePath)){  //File removal here
             return true;
         } else {
             return false;
