@@ -9,6 +9,7 @@
 #include <iostream>
 #include <cstdint>
 #include <vector>
+#include <thread>
 #include <bsoncxx/builder/basic/document.hpp>
 #include <bsoncxx/json.hpp>
 #include <mongocxx/client.hpp>

@@ -8,6 +8,7 @@
 DatabaseInterface* databaseConnection;
 FileSystemInterface* fileManager;
 
+//Helper method: password registration method for registerNewUser() and changePassword()
 std::string fetchPassword(){
     std::string newPassword;
     std::string confirmPassword;
@@ -37,6 +38,7 @@ std::string fetchPassword(){
     exit(0);
 }
 
+//Takes the user through the password creation wizard
 void registerNewUser() {
 
     std::cout << "Welcome to Key Manager\n" << std::endl;
@@ -48,6 +50,7 @@ void registerNewUser() {
 
 }
 
+//Verifies user password
 void checkPassword(std::string password) {
     //first we fetch the username so that we can query using it
     std::string username = getlogin();
@@ -134,6 +137,13 @@ void showLogs(std::string password){
     databaseConnection->addLog("Logs viewed by user (ALL logs)");
 }
 
+//Deletes the file after 15 minutes
+void selfDestuctKey(const std::string& path, FileSystemInterface* fileSysMngr){
+    //pauses the self-destruction for 15 minutes
+    std::this_thread::sleep_for(std::chrono::minutes(15));
+    fileSysMngr->deleteFile(path);
+}
+
 //Gives the user the key in the specified directory
 void exportKey(std::string password, std::string keyName, std::string path){
     checkPassword(password);
@@ -145,6 +155,19 @@ void exportKey(std::string password, std::string keyName, std::string path){
 
     if(fileSaved){
         databaseConnection->addLog("Key \"" + keyName + "\" was exported to a file.");
+        std::cout << "File created. Will self-destruct in 15 mins." << std::endl;
+
+        //create the path
+        std::string fullDirectory = path + "/" + fileManager->getKeyFileName() + file.keyType;
+
+        //Create a thread
+        std::thread selfDestructThread(selfDestuctKey, fullDirectory, fileManager);
+
+        if(selfDestructThread.joinable()) {
+            //Thread will now run in the background
+            selfDestructThread.detach();
+        }
+
     } else {
         databaseConnection->addLog("Failed attempt to export key\"" + keyName + "\" to a file.");
     }
@@ -172,7 +195,7 @@ void addNewKey(std::string password, std::string keyName, std::string path){
     FileSystemInterface::KeyFile keyFromFile = fileManager->getFileAsString(path);
     databaseConnection->addLog("New file (\"" + path + "\") read by client.");
 
-    //Insert that file into the database - Mappings to a new Key struct
+    //Insert that file into the database -  Mappings to a new Key struct
     databaseConnection->insertKey(keyName, {keyFromFile.fileContents, keyFromFile.fileExtension});
 }
 
@@ -248,16 +271,7 @@ int main(int argc, char** argv) {
         registerNewUser();
 
     } else {
-
         determineServiceRequest(argc, argv);
-
     }
     return 0;
 }
-
-
-
-
-
-
-

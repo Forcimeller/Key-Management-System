@@ -28,7 +28,6 @@ std::string FileSystemInterface::getCurrentDirectory(){
 bool FileSystemInterface::saveFile(FileSystemInterface::KeyFile file, std::string directory) {
 
     try {
-        std::cout << file.fileContents << std::endl;
         std::ofstream newFile(directory + "/" + keyFileName + file.fileExtension);
         newFile << file.fileContents << std::endl;
         newFile.close();
@@ -42,10 +41,10 @@ bool FileSystemInterface::saveFile(FileSystemInterface::KeyFile file, std::strin
 }
 
 /* Public: Responsible for deleting the key file from the current directory */
-bool FileSystemInterface::deleteFile() {
+bool FileSystemInterface::deleteFile(std::string filePath) {
 
     try {
-        if(std::filesystem::remove(keyFileName)){  //File removal here
+        if(std::filesystem::remove(filePath)){  //File removal here
             return true;
         } else {
             return false;
@@ -54,6 +53,11 @@ bool FileSystemInterface::deleteFile() {
         std::cout << "There was an error removing the file." << std::endl;
     }
     return false;
+}
+
+/* Public: Responsible for retunting the Keyfile name */
+std::string FileSystemInterface::getKeyFileName() {
+    return this->keyFileName;
 }
 
 /* Private: Responsible for reading files from the directory */
