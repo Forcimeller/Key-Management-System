@@ -1,0 +1,57 @@
+/* Header Div */
+
+*{
+    overflow: clip;
+}
+
+
+.main-grid-container {
+    display: grid;
+    grid-template-areas:
+    'logo header'
+    'sidebar mainArea';
+    margin: 0px;
+    border: 0px;
+    padding: 5px;
+    gap: 0px;
+    width: 100vw;
+    height: 100vh;
+}
+
+.main-grid-container > div {
+    font-family: Aptos, sans-serif;
+}
+
+.logo {
+    grid-area: logo;
+    background-color: #46b1e1;
+    color: white;
+    font-size: 15pt;
+    text-align-all: center;
+    text-align: center;
+    padding-top: 3vh;
+    padding-bottom: 3vh;
+    width: 25vw;
+}
+.header {
+    color: white;
+    font-size: 5vh;
+    text-align-all: left;
+    padding-top: 1.25vh;
+    padding-bottom: 1.25vh;
+    padding-left: 20px;
+    grid-area: header;
+    background-color: #215f9a;
+    width: 75vw;
+}
+.sidebar {
+    grid-area: sidebar;
+    background-color: #156082;
+    height: 95vh;
+    width: 25vw;
+}
+.mainArea {
+    grid-area: mainArea;
+    background-color: #ffffff;
+    width: 75vw;
+}
