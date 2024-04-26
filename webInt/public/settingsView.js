@@ -13,7 +13,7 @@ function onClickSettings(){
         header.innerText = "Settings";
         keyContainer.style.display = "none";
         logContainer.style.display = "none";
-        keySettingsContainer.style.display = "none"
-
+        keySettingsContainer.style.display = "none";
+        settingsContainer.style.display = "block";
     }
 }

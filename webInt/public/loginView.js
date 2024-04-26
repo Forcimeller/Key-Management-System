@@ -18,6 +18,7 @@ function onClickLogout(){
         keySettingsContainer.style.display = "none"
         logContainer.style.display = "none";
         loginContainer.style.display="grid"
+        settingsContainer.style.display = "none";
     }
 }
 

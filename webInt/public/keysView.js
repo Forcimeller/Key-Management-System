@@ -16,6 +16,7 @@ function onClickKeys(){
         keyContainer.style.display = "block";
         logContainer.style.display = "none";
         keySettingsContainer.style.display = "none"
+        settingsContainer.style.display = "none";
         //API CALL
 
         ///* Then make something like this with JSON.stringify
@@ -56,9 +57,9 @@ function viewKey(keyName){
     html = "<h2>Key Details: " + key["keyName"] +"</h2>\n" +
         "<h5>Sample:</h5>\n" +
         "<p>" + key["keySample"] +"</p>\n" +
-        "<button>Replace</button>\n" +
-        "<button>Rename</button>\n" +
-        "<button>Delete</button>" ;
+        "<button id=\"replaceKeyButton\">Replace</button>\n" +
+        "<button id=\"renameKeyButton\">Rename</button>\n" +
+        "<button id=\"deleteKeyButton\">Delete</button>" ;
 
     keySettingsContainer.innerHTML = html;
 }

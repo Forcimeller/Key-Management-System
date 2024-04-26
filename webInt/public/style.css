@@ -239,3 +239,8 @@ input[type=password], select {
     text-align: right;
     color: dimgrey;
 }
+
+.settingsContainer {
+    display: block;
+    padding: 20px;
+}
