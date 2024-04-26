@@ -184,7 +184,7 @@ input[type=password], select {
 }
 
 .keyContainer {
-
+    display: block;
 }
 
 .keyDiv {
@@ -192,6 +192,18 @@ input[type=password], select {
     margin: 10px;
     padding: 5px;
 
+}
+
+.keyDiv:hover {
+    background-color: #E8E8E8;
+    margin: 7px;
+    padding: 5px;
+}
+
+.keyDiv:active {
+    background-color: #c7c7c7;
+    margin: 13px;
+    padding: 5px;
 }
 
 .keyName{

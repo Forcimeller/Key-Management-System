@@ -14,6 +14,7 @@ function onClickLogout(){
         settingsButton.className = "sidebarButtonInDisabled";
         logoutButton.className = "sidebarButtonInDisabled";
         header.innerText = "Sign In";
+        keyContainer.style.display = "none";
         loginContainer.style.display="grid"
     }
 }
