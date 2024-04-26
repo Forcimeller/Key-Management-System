@@ -58,6 +58,7 @@ body {
     grid-area: mainArea;
     background-color: #ffffff;
     width: 75vw;
+    overflow: auto;
 }
 
 .sidebarGrid {
@@ -180,4 +181,29 @@ input[type=password], select {
     font-size: 14pt;
     margin-left: 90px;
     margin-right: 90px;
+}
+
+.keyContainer {
+
+}
+
+.keyDiv {
+    background-color: #E8E8E8;
+    margin: 10px;
+    padding: 5px;
+
+}
+
+.keyName{
+    font-size: 18pt;
+}
+
+.keySample{
+    font-size: 15pt;
+    color: dimgrey;
+}
+
+.keyType{
+    text-align: left;
+    color: dimgrey;
 }

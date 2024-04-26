@@ -3,7 +3,7 @@ keyButton.onclick = function() {onClickKeys()};
 
 //Process button click
 function onClickKeys(){
-    if (!keyButton.disabled){
+    if (!keyButton.disabled) {
         keyButton.disabled = true;
         logButton.disabled = false;
         settingsButton.disabled = false;
@@ -12,6 +12,6 @@ function onClickKeys(){
         logButton.className = "sidebarButton";
         settingsButton.className = "sidebarButton";
         logoutButton.className = "sidebarButton";
-        header.innerText = "Keys"
+        header.innerText = "Keys";
     }
 }
