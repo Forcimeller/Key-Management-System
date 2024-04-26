@@ -1,5 +1,7 @@
+//Event Handling for button
 logButton.onclick = function() {onClickLogs()};
 
+//Process button click
 function onClickLogs(){
     if (!logButton.disabled){
         keyButton.disabled = false;

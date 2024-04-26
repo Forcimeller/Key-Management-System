@@ -1,5 +1,7 @@
+//Event Handling for button
 keyButton.onclick = function() {onClickKeys()};
 
+//Process button click
 function onClickKeys(){
     if (!keyButton.disabled){
         keyButton.disabled = true;

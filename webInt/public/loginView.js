@@ -1,5 +1,7 @@
+//Event Handling for button
 logoutButton.onclick = function() {onClickLogout()};
 
+//Process button click
 function onClickLogout(){
     if (!logButton.disabled){
         keyButton.disabled = true;

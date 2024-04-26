@@ -1,3 +1,4 @@
+/* Declaration of every HTML component */
 mainGrid = document.getElementById("mainGrid");
 mainArea = document.getElementById("pageArea");
 header = document.getElementById("header");
