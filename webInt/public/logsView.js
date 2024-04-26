@@ -14,6 +14,7 @@ function onClickLogs(){
         keyContainer.style.display = "none";
         logContainer.style.display = "block";
         keySettingsContainer.style.display = "none"
+        settingsContainer.style.display = "none";
 
         ///* Then make something like this with JSON.stringify
         const logsFromDB = [
