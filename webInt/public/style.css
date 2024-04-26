@@ -67,6 +67,7 @@ body {
             10vh
             10vh
             10vh
+            10vh
             auto;
     grid-template-columns:
             auto;
@@ -78,7 +79,6 @@ body {
     border: none;
     width: auto;
     padding: 10px;
-    text-decoration: none;
     display: block;
     font-size: 23px;
     transition-duration: 0.5s;
@@ -91,22 +91,31 @@ body {
     border: none;
     width: auto;
     padding: 8px;
-    text-decoration: none;
     display: block;
     font-size: 25px;
     transition-duration: 0.5s;
     background-color: #0f4e68;
 }
 
-.sidebarButtonInactive {
+.sidebarButton:active {
+    border: none;
+    width: auto;
+    padding: 11px;
+    display: block;
+    font-size: 20px;
+    transition-duration: 0.1s;
+    background-color: #0f4e68;
+}
+
+.sidebarButtonInDisabled {
     border: none;
     width: auto;
     padding: 10px;
-    text-decoration: none;
     display: block;
     font-size: 23px;
     transition-duration: 0.5s;
     text-align: right;
-    color: gray;
+    font-style: italic;
+    color: #696969;
     background-color: #156082;
 }
