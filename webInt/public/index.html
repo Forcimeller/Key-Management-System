@@ -7,7 +7,7 @@
     </head>
     <body>
         <div class="main-grid-container" id="mainGrid">
-            <div class=header id="header"></div>
+            <div class=header id="header">Sign In</div>
             <div class=logo>KEY MANAGEMENT SYSTEM</div>
             <div class=sidebar id="sidebarContainer">
                 <div class="sidebarGrid">
@@ -19,14 +19,20 @@
                 </div>
             </div>
             <div class=mainArea id="pageArea">
-
+                <form class="loginGrid" id="loginContainer">
+                    <div></div>
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password">
+                    <a class="signInButton" id ="signInButton">Sign In!</a>
+                    <div></div>
+                </form>
             </div>
         </div>
         <script src="elementDeclarations.js"></script>
         <script src="keysView.js"></script>
-        <script src="loginView.js"></script>
         <script src="logsView.js"></script>
         <script src="settingsView.js"></script>
+        <script src="loginView.js"></script>
         <script src="client.js"></script>
         <script src="main.js"></script>
     </body>

@@ -6,3 +6,6 @@ keyButton = document.getElementById("keyButton");
 logButton = document.getElementById("logsButton");
 settingsButton = document.getElementById("settingsButton");
 logoutButton = document.getElementById("logoutButton");
+loginContainer = document.getElementById("loginContainer");
+loginButton = document.getElementById("signInButton");
+passwordInput = document.getElementById("password")

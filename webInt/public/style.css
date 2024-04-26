@@ -119,3 +119,65 @@ body {
     color: #696969;
     background-color: #156082;
 }
+
+.loginGrid {
+    display: grid;
+    background-color: white;
+    grid-template-rows:
+            auto
+            10vh
+            10vh
+            10vh
+            10vh
+            10vh
+            auto;
+    grid-template-columns:
+            auto;
+
+    grid-row-gap: 5px;
+
+    padding: 150px;
+}
+
+label {
+    width: 100%;
+    display: inline-block;
+    color: black;
+    background-color: white;
+    text-align: center;
+    font-size: 20px;
+    padding-top: 20px;
+}
+
+input[type=password], select {
+    width: 100%;
+    padding: 6px 5px;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+    color: black;
+    background-color: #ECECEC;
+    font-size: 15pt;
+    text-align: center;
+}
+
+.signInButton {
+    text-align: center;
+    font-size: 16pt;
+    padding-top: 10px;
+    margin-left: 70px;
+    margin-right: 70px;
+    background-color: white;
+}
+
+.signInButton:hover{
+    transition-duration: 0.2s;
+    background-color: dimgrey;
+    color: white;
+    text-align: center;
+}
+
+.signInButton:active{
+    font-size: 14pt;
+    margin-left: 90px;
+    margin-right: 90px;
+}
