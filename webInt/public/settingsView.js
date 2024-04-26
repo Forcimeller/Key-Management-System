@@ -12,5 +12,6 @@ function onClickSettings(){
         settingsButton.className = "sidebarButtonInDisabled";
         header.innerText = "Settings";
         keyContainer.style.display = "hidden";
+        keySettingsContainer.style.display = "none"
     }
 }

@@ -12,5 +12,6 @@ function onClickLogs(){
         settingsButton.className = "sidebarButton";
         header.innerText = "Logs";
         keyContainer.style.display = "none";
+        keySettingsContainer.style.display = "none"
     }
 }

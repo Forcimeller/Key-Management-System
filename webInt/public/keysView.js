@@ -14,6 +14,7 @@ function onClickKeys(){
         logoutButton.className = "sidebarButton";
         header.innerText = "Keys";
         keyContainer.style.display = "block";
+        keySettingsContainer.style.display = "none"
         //API CALL
 
         ///* Then make something like this with JSON.stringify
@@ -42,5 +43,21 @@ function populateKeyPage(keys){
 
 function viewKey(keyName){
     //Show this specific key's details (delete and update)
+    keyContainer.style.display = "none";
+    keySettingsContainer.style.display = "block";
+    keyButton.disabled = false;
+    keyButton.className = "sidebarButton";
 
+    //API call: get key data again
+
+    const key = {keyName:"2", keySample: "loremIpsupm", keyType: ".pub"};
+
+    html = "<h2>Key Details: " + key["keyName"] +"</h2>\n" +
+        "<h5>Sample:</h5>\n" +
+        "<p>" + key["keySample"] +"</p>\n" +
+        "<button>Replace</button>\n" +
+        "<button>Rename</button>\n" +
+        "<button>Delete</button>" ;
+
+    keySettingsContainer.innerHTML = html;
 }

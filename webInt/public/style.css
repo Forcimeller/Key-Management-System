@@ -191,7 +191,6 @@ input[type=password], select {
     background-color: #E8E8E8;
     margin: 10px;
     padding: 5px;
-
 }
 
 .keyDiv:hover {
@@ -219,3 +218,9 @@ input[type=password], select {
     text-align: left;
     color: dimgrey;
 }
+
+.keySettingContainer {
+    display: block;
+    padding: 20px;
+}
+

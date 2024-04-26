@@ -10,3 +10,4 @@ loginContainer = document.getElementById("loginContainer");
 loginButton = document.getElementById("signInButton");
 passwordInput = document.getElementById("password")
 keyContainer = document.getElementById("keyContainer")
+keySettingsContainer = document.getElementById("keySettingContainer")
