@@ -215,7 +215,7 @@ input[type=password], select {
 }
 
 .keyType{
-    text-align: left;
+    text-align: right;
     color: dimgrey;
 }
 
@@ -224,3 +224,18 @@ input[type=password], select {
     padding: 20px;
 }
 
+.logDiv {
+    background-color: #E8E8E8;
+    margin: 10px;
+    padding: 5px;
+}
+
+.logDescription{
+    font-size: 18pt;
+    text-align: left;
+}
+
+.logDate {
+    text-align: right;
+    color: dimgrey;
+}

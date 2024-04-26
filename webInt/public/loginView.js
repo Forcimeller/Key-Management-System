@@ -16,6 +16,7 @@ function onClickLogout(){
         header.innerText = "Sign In";
         keyContainer.style.display = "none";
         keySettingsContainer.style.display = "none"
+        logContainer.style.display = "none";
         loginContainer.style.display="grid"
     }
 }

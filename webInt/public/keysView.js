@@ -14,6 +14,7 @@ function onClickKeys(){
         logoutButton.className = "sidebarButton";
         header.innerText = "Keys";
         keyContainer.style.display = "block";
+        logContainer.style.display = "none";
         keySettingsContainer.style.display = "none"
         //API CALL
 
