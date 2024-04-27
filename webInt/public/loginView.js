@@ -24,11 +24,13 @@ function onClickLogout(){
 
 function onClickLoginButton() {
     //get password
+    let password = passwordInput.value;
+    let passwordCorrect = checkPassword(password);
     //if password == password
     //password = passwordInput.innerText.trim();
 
-    loginContainer.style.display="none";
-    keyButton.disabled = false;
-    onClickKeys();
+    //loginContainer.style.display="none";
+    //keyButton.disabled = false;
+    //onClickKeys();
 }
 
