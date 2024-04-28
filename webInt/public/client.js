@@ -98,3 +98,19 @@ async function getSingleKey(keyName){
     xhttpReq.open('GET', '/keys/' + keyName, true);
     xhttpReq.send();
 }
+
+async function getLogs(){
+    let xhttpReq = new XMLHttpRequest();
+    let logArray;
+    xhttpReq.onreadystatechange =function() {
+        if(this.readyState === 4 && this.status === 200) {
+            logArray = JSON.parse(xhttpReq.responseText);
+            showAllLogs(logArray);
+        } else {
+            console.error("There was an error: " + xhttpReq.status)
+        }
+    };
+
+    xhttpReq.open('GET', '/logs', true);
+    xhttpReq.send();
+}

@@ -60,6 +60,14 @@ async function getSingleKeyFromDB(request, response){
         response.send(JSON.stringify(result));
 }
 
+async function getLogsFromDB(request, response){
+
+        let result = await find({}, logsCollection);
+
+        response.send(JSON.stringify(result));
+
+}
+
 //Express App
 const app = express();
 

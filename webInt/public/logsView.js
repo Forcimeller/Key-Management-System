@@ -16,24 +16,18 @@ function onClickLogs(){
         keySettingsContainer.style.display = "none"
         settingsContainer.style.display = "none";
 
-        ///* Then make something like this with JSON.stringify
-        const logsFromDB = [
-            {description:"lorem ipsum", datetime: "1/2/3"},
-            {description:"dolor sit amet", datetime: "4/5/6"}
-        ];
-        //*/
-
-        showAllLogs(logsFromDB);
+        getLogs();
     }
 }
 
 function showAllLogs(logs) {
     let html = "";
-    for(let log in logs){
+
+    for (let logIndex = 0; logIndex < logs.length; logIndex++){
         html +=
             "<div class=\"logDiv\">\n" +
-            "<div class=\"logDescription\">" + log["description"] +"</div>\n" +
-            "<div class=\"logDate\">" + log["datetime"] +"</div>\n" +
+            "<div class=\"logDescription\">" + logs[logIndex]["description"] +"</div>\n" +
+            "<div class=\"logDate\">" + logs[logIndex]["datetime"] +"</div>\n" +
             "</div>"
     }
 
