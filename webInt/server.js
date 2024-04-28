@@ -32,7 +32,6 @@ async function find(query, chosenCollection){
 
 async function verifyPassword(request, response){
         let passwordAttempt = request.body;
-        console.log(passwordAttempt);
 
         let result = await find(passwordAttempt, loginCollection);
 
@@ -41,6 +40,24 @@ async function verifyPassword(request, response){
         } else {
                 response.send(JSON.stringify({passwordCorrect: true}));
         }
+}
+
+async function getKeysFromDB(request, response){
+
+        let result = await find({}, keysCollection);
+
+        response.send(JSON.stringify(result));
+
+}
+
+async function getSingleKeyFromDB(request, response){
+
+        let urlArray = request.url.split("/");
+        let specificKeyName = urlArray[urlArray.length - 1];
+
+        let result = await find({keyName: specificKeyName}, keysCollection);
+
+        response.send(JSON.stringify(result));
 }
 
 //Express App
@@ -57,6 +74,9 @@ app.get('/', (request, response) => {
 });
 
 app.post('/login', verifyPassword);
+app.get('/keys', getKeysFromDB);
+app.get('/keys/*', getSingleKeyFromDB);
+app.get('/logs', getLogsFromDB);
 
 app.listen(8080);
 console.log("Express listening on port 8080");
