@@ -28,7 +28,8 @@ function populateKeyPage(keys){
             "<div class=\"keyDiv\" onclick=getSingleKey(\"" + keys[keyIndex].keyName + "\")>\n" +
                 "<div class=\"keyName\">" + keys[keyIndex].keyName +"</div>\n" +
                 "<div class=\"keySample\">" + keys[keyIndex].keySample +"</div>\n" +
-                "<div class=\"keyType\">" + (keys[keyIndex].keyType === "" ? "-" : keys[keyIndex].keyType) +"</div>\n" +
+                "<div class=\"keyType\">" + (keys[keyIndex].keyType === "" ? "-" : keys[keyIndex].keyType) +
+                "</div>\n" +
             "</div>"
     }
 
@@ -36,8 +37,6 @@ function populateKeyPage(keys){
 }
 
 function viewKey(key){
-
-    //const key = {keyName:"2", keySample: "loremIpsupm", keyType: ".pub"};
 
     //Show this specific key's details (delete and update)
     keyContainer.style.display = "none";
@@ -49,9 +48,29 @@ function viewKey(key){
     html = "<h2>Key Details: " + key[0].keyName +"</h2>\n" +
         "<h5>Sample:</h5>\n" +
         "<p>" + key[0].keySample +"</p>\n" +
-        "<button id=\"replaceKeyButton\">Replace</button>\n" +
-        "<button id=\"renameKeyButton\">Rename</button>\n" +
-        "<button id=\"deleteKeyButton\">Delete</button>" ;
+        "<button id=\"replaceKeyButton\" onclick='replaceKey(\"" +  key[0].keyName  + "\")'>Replace</button>\n" +
+        "<button id=\"renameKeyButton\" onclick='renameKey(\"" +  key[0].keyName  + "\")'>Rename</button>\n" +
+        "<button id=\"deleteKeyButton\" onclick='deleteKey(\"" +  key[0].keyName  + "\")'>Delete</button>\n";
 
     keySettingsContainer.innerHTML = html;
+}
+
+function replaceKey(keyName) {
+    let formHtml =
+        "<h2>Replace Key: " + keyName + "</h2>\n" +
+        "<form action='/replace/" + keyName + "' method='post' " +
+        "encType=\"multipart/form-data\">\n" +
+        "        <input type=\"file\" name=\"replacementKey\" />\n" +
+        "        <input type='submit' value='Upload' />\n" +
+        "</form>";
+
+    keySettingsContainer.innerHTML = formHtml;
+}
+
+function renameKeyConclusion(keyName, newKeyName){
+    alert(keyName + " renamed to " + newKeyName);
+}
+
+function deleteKeyConclusion(keyName){
+    alert(keyName + " Deleted");
 }
