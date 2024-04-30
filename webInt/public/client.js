@@ -114,3 +114,25 @@ async function getLogs(){
     xhttpReq.open('GET', '/logs', true);
     xhttpReq.send();
 }
+
+async function addReplacementKey(keyName){
+    let xhttpReq = new XMLHttpRequest();
+
+    xhttpReq.onreadystatechange = function() {
+        if(this.readyState === 4 && this.status === 200) {
+            let response = JSON.parse(xhttpReq.responseText);
+            //Data Received here
+            if("error" in response) {//Error from server
+                alert("File upload failed")
+            }else {
+                keyReplacementConclusion(response);
+            }
+        } else {
+            console.error("There was an error: " + xhttpReq.status)
+        }
+    };
+
+    xhttpReq.open("POST", "/replace/"+keyName, true);
+    xhttpReq.setRequestHeader("Content-type", "application/json");
+    xhttpReq.send(postData);
+}

@@ -50,13 +50,34 @@ function viewKey(key){
         "<p>" + key[0].keySample +"</p>\n" +
         "<button id=\"replaceKeyButton\" onclick='replaceKey(\"" +  key[0].keyName  + "\")'>Replace</button>\n" +
         "<button id=\"renameKeyButton\" onclick='renameKey(\"" +  key[0].keyName  + "\")'>Rename</button>\n" +
-        "<button id=\"deleteKeyButton\" onclick='deleteKey(\"" +  key[0].keyName  + "\")'>Delete</button>" ;
+        "<button id=\"deleteKeyButton\" onclick='deleteKey(\"" +  key[0].keyName  + "\")'>Delete</button>\n";
 
     keySettingsContainer.innerHTML = html;
 }
 
 function replaceKey(keyName){
-    alert(keyName + " REPLACE");
+    let formHtml =
+        "<h2>Replace Key: " + keyName +"</h2>\n" +
+        "<form action='/replace/" + keyName + "' method='post' " +
+        "encType=\"multipart/form-data\">\n" +
+        "        <input type=\"file\" name=\"replacementKey\" />\n" +
+        "        <input type='submit' value='Upload' />\n" +
+        "</form>";
+
+    /*
+    let formHtml =
+        "<h2>Replace Key: " + keyName +"</h2>\n" +
+        "<form action='/replace/" + keyName + "' method='post' encType=\"multipart/form-data\">\n" +
+        "        <input type=\"file\" id=\"replacmentKey\" />\n" +
+        "        <button onclick="uploadFile()">Upload</button>\n" +
+        "</form>";
+    */
+
+    keySettingsContainer.innerHTML = formHtml;
+}
+
+function keyReplacementConclusion(response){
+
 }
 
 function renameKey(keyName){
