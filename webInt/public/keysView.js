@@ -67,8 +67,8 @@ function replaceKey(keyName) {
     keySettingsContainer.innerHTML = formHtml;
 }
 
-function renameKey(keyName){
-    alert(keyName + " RENAME");
+function renameKeyConclusion(keyName, newKeyName){
+    alert(keyName + " renamed to " + newKeyName);
 }
 
 function deleteKeyConclusion(keyName){

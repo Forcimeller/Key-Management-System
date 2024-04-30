@@ -156,6 +156,18 @@ async function deleteSingleKeyOnDB(request, response){
 
         response.send(JSON.stringify(confirmation));
 }
+
+async function renameSingleKeyOnDB(request, response){
+        let keyNames = request.body;
+
+        let requestNewName = keyNames.newName;
+        let requestExistingName = keyNames.existingName;
+
+        let confirmation = await update({keyName: requestExistingName},
+            {$set: {keyName: requestNewName}}, keysCollection)
+
+        response.send(JSON.stringify(confirmation));
+}
 app.get('/', (request, response) => {
         response.send()
 });
@@ -163,6 +175,7 @@ app.get('/', (request, response) => {
 app.post('/login', verifyPassword);
 app.post('/replace/*', replaceSingleKeyOnDB)
 app.post('/delete/*', deleteSingleKeyOnDB)
+app.post('/rename/*', renameSingleKeyOnDB);
 app.get('/keys', getKeysFromDB);
 app.get('/keys/*', getSingleKeyFromDB);
 app.get('/logs', getLogsFromDB);

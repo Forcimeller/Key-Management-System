@@ -132,3 +132,29 @@ async function deleteKey(keyName){
     xhttpReq.setRequestHeader("Content-type", "application/json");
     xhttpReq.send(JSON.stringify({"keyName": keyName}));
 }
+
+async function renameKey(keyName){
+    let xhttpReq = new XMLHttpRequest();
+
+    let newKeyName = prompt("Please enter a new Key name:");
+
+    if(newKeyName.length > 0) {
+        let postData = JSON.stringify({existingName: keyName, newName: newKeyName});
+
+        xhttpReq.onreadystatechange = function () {
+            if (this.readyState === 4 && this.status === 200) {
+                let data = JSON.parse(xhttpReq.responseText);
+                //Data Received here
+                renameKeyConclusion(keyName, newKeyName);
+            } else {
+                console.error("There was an error: " + xhttpReq.status)
+            }
+        };
+
+        xhttpReq.open("POST", "/rename/" + keyName, true);
+        xhttpReq.setRequestHeader("Content-type", "application/json");
+        xhttpReq.send(postData);
+    } else {
+        alert("Do not leave the rename field empty..")
+    }
+}
