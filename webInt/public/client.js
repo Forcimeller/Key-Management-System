@@ -1,5 +1,5 @@
 
-function getRequest(url){
+function clearLogs(){
     let xhttpReq = new XMLHttpRequest();
 
     xhttpReq.onreadystatechange =function() {
@@ -12,14 +12,14 @@ function getRequest(url){
         }
     };
 
-    xhttpReq.open('GET', url, true);
+    xhttpReq.open('GET', "/clearLogs", true);
     xhttpReq.send();
 }
 
-async function postRequest(url, postData){
+function clearKeys(){
     let xhttpReq = new XMLHttpRequest();
 
-    xhttpReq.onreadystatechange = function() {
+    xhttpReq.onreadystatechange =function() {
         if(this.readyState === 4 && this.status === 200) {
             let data = JSON.parse(xhttpReq.responseText);
             //Data Received here
@@ -29,9 +29,8 @@ async function postRequest(url, postData){
         }
     };
 
-    xhttpReq.open("POST", url, true);
-    xhttpReq.setRequestHeader("Content-type", "application/json");
-    xhttpReq.send(postData);
+    xhttpReq.open('GET', "/clearKeys", true);
+    xhttpReq.send();
 }
 
 async function checkPassword(passwordInput){
