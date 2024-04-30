@@ -72,6 +72,15 @@ async function insert(data, chosenCollection){
         return confirmation;
 }
 
+async function deleteMany(query, chosenCollection){
+
+        //execute
+        const confirmation = await chosenCollection.deleteMany(query);
+
+        //Return confirmation
+        return confirmation;
+}
+
 async function addLog(logDescription){
         let now = new Date();
         let log = {description: logDescription, datetime: now}
@@ -200,12 +209,22 @@ async function renameSingleKeyOnDB(request, response){
         response.send(JSON.stringify(confirmation));
 }
 
-async function clearKeysFromDB(){
-        
+async function clearKeysFromDB(request, response){
+
+        let confirmation = await deleteMany({}, keysCollection)
+
+        addLog("From Web GUI: ALL Keys Deleted");
+
+        response.send(JSON.stringify(confirmation))
 }
 
-async function clearLogsFromDB(){
+async function clearLogsFromDB(request, response){
 
+        let confirmation = await deleteMany({}, logsCollection)
+
+        addLog("From Web GUI: ALL logs Deleted");
+
+        response.send(JSON.stringify(confirmation))
 }
 
 app.get('/', (request, response) => {
@@ -220,8 +239,8 @@ app.post('/rename/*', renameSingleKeyOnDB);
 app.get('/keys', getKeysFromDB);
 app.get('/keys/*', getSingleKeyFromDB);
 app.get('/logs', getLogsFromDB);
-app.get('/clearLogs');
-app.get('/clearKeys');
+app.get('/clearLogs', clearLogsFromDB);
+app.get('/clearKeys', clearKeysFromDB);
 
 app.listen(8080);
 console.log("Express listening on port 8080");

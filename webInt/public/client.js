@@ -1,36 +1,39 @@
 
 function clearLogs(){
-    let xhttpReq = new XMLHttpRequest();
+    if(confirm("You are about to clear ALL Logs")) {
+        let xhttpReq = new XMLHttpRequest();
 
-    xhttpReq.onreadystatechange =function() {
-        if(this.readyState === 4 && this.status === 200) {
-            let data = JSON.parse(xhttpReq.responseText);
-            //Data Received here
-            console.log("Data received", data)
-        } else {
-            console.error("There was an error: " + xhttpReq.status)
-        }
-    };
+        xhttpReq.onreadystatechange = function () {
+            if (this.readyState === 4 && this.status === 200) {
+                let data = JSON.parse(xhttpReq.responseText);
+                alert("ALL Logs cleared");
+            } else {
+                console.error("There was an error: " + xhttpReq.status)
+            }
+        };
 
-    xhttpReq.open('GET', "/clearLogs", true);
-    xhttpReq.send();
+        xhttpReq.open('GET', "/clearLogs", true);
+        xhttpReq.send();
+    }
 }
 
 function clearKeys(){
-    let xhttpReq = new XMLHttpRequest();
+    if(confirm("You are about to clear ALL keys")) {
+        let xhttpReq = new XMLHttpRequest();
 
-    xhttpReq.onreadystatechange =function() {
-        if(this.readyState === 4 && this.status === 200) {
-            let data = JSON.parse(xhttpReq.responseText);
-            //Data Received here
-            console.log("Data received", data)
-        } else {
-            console.error("There was an error: " + xhttpReq.status)
-        }
-    };
+        xhttpReq.onreadystatechange = function () {
+            if (this.readyState === 4 && this.status === 200) {
+                let data = JSON.parse(xhttpReq.responseText);
+                //Data Received here
+                alert("ALL Keys cleared");
+            } else {
+                console.error("There was an error: " + xhttpReq.status)
+            }
+        };
 
-    xhttpReq.open('GET', "/clearKeys", true);
-    xhttpReq.send();
+        xhttpReq.open('GET', "/clearKeys", true);
+        xhttpReq.send();
+    }
 }
 
 async function checkPassword(passwordInput){
