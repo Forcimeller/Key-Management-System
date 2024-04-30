@@ -55,35 +55,22 @@ function viewKey(key){
     keySettingsContainer.innerHTML = html;
 }
 
-function replaceKey(keyName){
+function replaceKey(keyName) {
     let formHtml =
-        "<h2>Replace Key: " + keyName +"</h2>\n" +
+        "<h2>Replace Key: " + keyName + "</h2>\n" +
         "<form action='/replace/" + keyName + "' method='post' " +
         "encType=\"multipart/form-data\">\n" +
         "        <input type=\"file\" name=\"replacementKey\" />\n" +
         "        <input type='submit' value='Upload' />\n" +
         "</form>";
 
-    /*
-    let formHtml =
-        "<h2>Replace Key: " + keyName +"</h2>\n" +
-        "<form action='/replace/" + keyName + "' method='post' encType=\"multipart/form-data\">\n" +
-        "        <input type=\"file\" id=\"replacmentKey\" />\n" +
-        "        <button onclick="uploadFile()">Upload</button>\n" +
-        "</form>";
-    */
-
     keySettingsContainer.innerHTML = formHtml;
-}
-
-function keyReplacementConclusion(response){
-
 }
 
 function renameKey(keyName){
     alert(keyName + " RENAME");
 }
 
-function deleteKey(keyName){
-    alert(keyName + " DELETE");
+function deleteKeyConclusion(keyName){
+    alert(keyName + " Deleted");
 }

@@ -54,6 +54,15 @@ async function update(query, replacementData, chosenCollection){
         return confirmation;
 }
 
+async function deleteDocument(query, chosenCollection){
+
+        //execute
+        const confirmation = await chosenCollection.deleteOne(query);
+
+        //Return confirmation
+        return confirmation;
+}
+
 async function verifyPassword(request, response){
         let passwordAttempt = request.body;
 
@@ -89,10 +98,7 @@ async function getLogsFromDB(request, response){
         let result = await find({}, logsCollection);
 
         response.send(JSON.stringify(result));
-
 }
-
-
 
 async function replaceSingleKeyOnDB(request, response) {
         if (!request.files || Object.keys(request.files).length === 0) {
@@ -141,12 +147,22 @@ async function replaceSingleKeyOnDB(request, response) {
 
 }
 
+async function deleteSingleKeyOnDB(request, response){
+
+        let urlArray = request.url.split("/");
+        let specificKeyName = urlArray[urlArray.length - 1];
+
+        let confirmation = await deleteDocument({keyName: specificKeyName}, keysCollection)
+
+        response.send(JSON.stringify(confirmation));
+}
 app.get('/', (request, response) => {
         response.send()
 });
 
 app.post('/login', verifyPassword);
 app.post('/replace/*', replaceSingleKeyOnDB)
+app.post('/delete/*', deleteSingleKeyOnDB)
 app.get('/keys', getKeysFromDB);
 app.get('/keys/*', getSingleKeyFromDB);
 app.get('/logs', getLogsFromDB);

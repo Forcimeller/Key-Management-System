@@ -99,11 +99,11 @@ async function getSingleKey(keyName){
     xhttpReq.send();
 }
 
-async function getLogs(){
+async function getLogs() {
     let xhttpReq = new XMLHttpRequest();
     let logArray;
-    xhttpReq.onreadystatechange =function() {
-        if(this.readyState === 4 && this.status === 200) {
+    xhttpReq.onreadystatechange = function () {
+        if (this.readyState === 4 && this.status === 200) {
             logArray = JSON.parse(xhttpReq.responseText);
             showAllLogs(logArray);
         } else {
@@ -115,24 +115,20 @@ async function getLogs(){
     xhttpReq.send();
 }
 
-async function addReplacementKey(keyName){
+async function deleteKey(keyName){
     let xhttpReq = new XMLHttpRequest();
 
     xhttpReq.onreadystatechange = function() {
         if(this.readyState === 4 && this.status === 200) {
-            let response = JSON.parse(xhttpReq.responseText);
+            let data = JSON.parse(xhttpReq.responseText);
             //Data Received here
-            if("error" in response) {//Error from server
-                alert("File upload failed")
-            }else {
-                keyReplacementConclusion(response);
-            }
+            deleteKeyConclusion(keyName);
         } else {
             console.error("There was an error: " + xhttpReq.status)
         }
     };
 
-    xhttpReq.open("POST", "/replace/"+keyName, true);
+    xhttpReq.open("POST", "/delete/" + keyName, true);
     xhttpReq.setRequestHeader("Content-type", "application/json");
-    xhttpReq.send(postData);
+    xhttpReq.send(JSON.stringify({"keyName": keyName}));
 }
