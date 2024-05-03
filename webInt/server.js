@@ -144,13 +144,15 @@ async function replaceSingleKeyOnDB(request, response) {
         }
 
         let keyFile = request.files.replacementKey;
+        let errorContent;
 
         keyFile.mv('./' + keyFile.name, function(err) {
                 if (err)
+                        errorContent = JSON.stringify(err);
                         addLog("From Web GUI: failed attempt to replace a key");
                         return response.status(500).send('{"filename": "' +
                             keyFile.name + '", "upload": false, "error": "' +
-                            JSON.stringify(err) + '"}');
+                            errorContent + '"}');
 
         });
 
@@ -166,6 +168,7 @@ async function replaceSingleKeyOnDB(request, response) {
                 }
 
                 fileContents = contents;
+                console.log(fileContents)
         });
 
         //Query formation:
@@ -178,11 +181,12 @@ async function replaceSingleKeyOnDB(request, response) {
         let confirm = await update(query, replacementData, keysCollection);
         console.log(confirm);
 
-        addLog("From Web GUI: Key (" + specificKeyName + ") was replaced");
-        return response.status(200).send(
-            JSON.stringify("Key was replaced!")
-        )
-
+        if(confirm.upsertedCount === 1) {
+                addLog("From Web GUI: Key (" + specificKeyName + ") was replaced");
+                return response.status(200).send(
+                    JSON.stringify("Key was replaced!")
+                )
+        }
 }
 
 async function deleteSingleKeyOnDB(request, response){
